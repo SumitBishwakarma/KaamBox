@@ -74,7 +74,7 @@ export const tools = [
         category: 'text',
         component: 'DuplicateRemover',
         tags: ['duplicate', 'remove', 'lines', 'unique'],
-        implemented: false
+        implemented: true
     },
     {
         id: 'emoji-picker',
@@ -84,7 +84,7 @@ export const tools = [
         category: 'text',
         component: 'EmojiPicker',
         tags: ['emoji', 'emoticon', 'copy'],
-        implemented: false
+        implemented: true
     },
     {
         id: 'reverse-text',
@@ -94,7 +94,7 @@ export const tools = [
         category: 'text',
         component: 'ReverseText',
         tags: ['reverse', 'mirror', 'flip'],
-        implemented: false
+        implemented: true
     },
     {
         id: 'slug-generator',
@@ -104,7 +104,7 @@ export const tools = [
         category: 'text',
         component: 'SlugGenerator',
         tags: ['slug', 'url', 'seo', 'permalink'],
-        implemented: false
+        implemented: true
     },
     {
         id: 'privacy-policy',
@@ -114,7 +114,7 @@ export const tools = [
         category: 'text',
         component: 'PrivacyPolicy',
         tags: ['privacy', 'policy', 'legal', 'template'],
-        implemented: false
+        implemented: true
     },
 
     // ============================================
@@ -148,7 +148,7 @@ export const tools = [
         category: 'image',
         component: 'Base64ToImage',
         tags: ['base64', 'decode', 'convert'],
-        implemented: false
+        implemented: true
     },
     {
         id: 'color-picker',
@@ -168,7 +168,7 @@ export const tools = [
         category: 'image',
         component: 'ImageCropper',
         tags: ['crop', 'resize', 'edit'],
-        implemented: false
+        implemented: true
     },
     {
         id: 'youtube-thumbnail',
@@ -178,7 +178,7 @@ export const tools = [
         category: 'image',
         component: 'YoutubeThumbnail',
         tags: ['youtube', 'thumbnail', 'download', 'video'],
-        implemented: false
+        implemented: true
     },
     {
         id: 'qr-generator',
@@ -198,7 +198,7 @@ export const tools = [
         category: 'image',
         component: 'SVGBlob',
         tags: ['svg', 'blob', 'shape', 'design'],
-        implemented: false
+        implemented: true
     },
     {
         id: 'image-filters',
@@ -218,7 +218,7 @@ export const tools = [
         category: 'image',
         component: 'MemeGenerator',
         tags: ['meme', 'text', 'image', 'funny'],
-        implemented: false
+        implemented: true
     },
 
     // ============================================
@@ -242,7 +242,7 @@ export const tools = [
         category: 'developer',
         component: 'CSSMinifier',
         tags: ['css', 'minify', 'compress', 'optimize'],
-        implemented: false
+        implemented: true
     },
     {
         id: 'html-encoder',
@@ -292,7 +292,7 @@ export const tools = [
         category: 'developer',
         component: 'UserAgentParser',
         tags: ['user agent', 'browser', 'device', 'info'],
-        implemented: false
+        implemented: true
     },
     {
         id: 'git-cheatsheet',
@@ -302,7 +302,7 @@ export const tools = [
         category: 'developer',
         component: 'GitCheatsheet',
         tags: ['git', 'commands', 'cheatsheet', 'reference'],
-        implemented: false
+        implemented: true
     },
     {
         id: 'code-diff',
@@ -312,7 +312,7 @@ export const tools = [
         category: 'developer',
         component: 'CodeDiff',
         tags: ['diff', 'compare', 'code', 'changes'],
-        implemented: false
+        implemented: true
     },
     {
         id: 'sql-formatter',
@@ -322,7 +322,7 @@ export const tools = [
         category: 'developer',
         component: 'SQLFormatter',
         tags: ['sql', 'format', 'query', 'database'],
-        implemented: false
+        implemented: true
     },
 
     // ============================================
@@ -356,7 +356,7 @@ export const tools = [
         category: 'math',
         component: 'CurrencyConverter',
         tags: ['currency', 'money', 'exchange', 'convert'],
-        implemented: false
+        implemented: true
     },
     {
         id: 'age-calculator',
@@ -386,7 +386,7 @@ export const tools = [
         category: 'math',
         component: 'GSTCalculator',
         tags: ['gst', 'vat', 'tax', 'calculate'],
-        implemented: false
+        implemented: true
     },
     {
         id: 'binary-converter',
@@ -406,7 +406,7 @@ export const tools = [
         category: 'math',
         component: 'HexDecimal',
         tags: ['hex', 'decimal', 'convert', 'number'],
-        implemented: false
+        implemented: true
     },
     {
         id: 'aspect-ratio',
@@ -416,7 +416,7 @@ export const tools = [
         category: 'math',
         component: 'AspectRatio',
         tags: ['aspect', 'ratio', 'screen', 'resolution'],
-        implemented: false
+        implemented: true
     },
     {
         id: 'roman-numerals',
@@ -426,7 +426,7 @@ export const tools = [
         category: 'math',
         component: 'RomanNumerals',
         tags: ['roman', 'numerals', 'convert', 'number'],
-        implemented: false
+        implemented: true
     },
 
     // ============================================
@@ -460,7 +460,7 @@ export const tools = [
         category: 'utility',
         component: 'WorldClock',
         tags: ['clock', 'timezone', 'world', 'time'],
-        implemented: false
+        implemented: true
     },
     {
         id: 'speed-test',
@@ -470,7 +470,7 @@ export const tools = [
         category: 'utility',
         component: 'SpeedTest',
         tags: ['speed', 'internet', 'test', 'download'],
-        implemented: false
+        implemented: true
     },
     {
         id: 'screen-resolution',
@@ -480,7 +480,7 @@ export const tools = [
         category: 'utility',
         component: 'ScreenResolution',
         tags: ['screen', 'resolution', 'viewport', 'display'],
-        implemented: false
+        implemented: true
     },
     {
         id: 'bmi-calculator',
@@ -500,7 +500,7 @@ export const tools = [
         category: 'utility',
         component: 'LoanCalculator',
         tags: ['loan', 'emi', 'interest', 'mortgage'],
-        implemented: false
+        implemented: true
     },
     {
         id: 'decision-maker',
@@ -510,7 +510,7 @@ export const tools = [
         category: 'utility',
         component: 'DecisionMaker',
         tags: ['decision', 'random', 'wheel', 'coin'],
-        implemented: false
+        implemented: true
     },
     {
         id: 'todo-list',

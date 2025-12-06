@@ -13,6 +13,11 @@ const toolComponents = {
     CaseConverter: lazy(() => import('../tools/text/CaseConverter')),
     MarkdownEditor: lazy(() => import('../tools/text/MarkdownEditor')),
     TextToSpeech: lazy(() => import('../tools/text/TextToSpeech')),
+    DuplicateRemover: lazy(() => import('../tools/text/DuplicateRemover')),
+    EmojiPicker: lazy(() => import('../tools/text/EmojiPicker')),
+    ReverseText: lazy(() => import('../tools/text/ReverseText')),
+    SlugGenerator: lazy(() => import('../tools/text/SlugGenerator')),
+    PrivacyPolicy: lazy(() => import('../tools/text/PrivacyPolicy')),
 
     // Image & Media
     ImageCompressor: lazy(() => import('../tools/image/ImageCompressor')),
@@ -20,6 +25,11 @@ const toolComponents = {
     ColorPicker: lazy(() => import('../tools/image/ColorPicker')),
     QRGenerator: lazy(() => import('../tools/image/QRGenerator')),
     ImageFilters: lazy(() => import('../tools/image/ImageFilters')),
+    Base64ToImage: lazy(() => import('../tools/image/Base64ToImage')),
+    ImageCropper: lazy(() => import('../tools/image/ImageCropper')),
+    YoutubeThumbnail: lazy(() => import('../tools/image/YoutubeThumbnail')),
+    SVGBlob: lazy(() => import('../tools/image/SVGBlob')),
+    MemeGenerator: lazy(() => import('../tools/image/MemeGenerator')),
 
     // Developer Tools
     JSONFormatter: lazy(() => import('../tools/developer/JSONFormatter')),
@@ -27,6 +37,11 @@ const toolComponents = {
     UUIDGenerator: lazy(() => import('../tools/developer/UUIDGenerator')),
     URLEncoder: lazy(() => import('../tools/developer/URLEncoder')),
     HTMLEncoder: lazy(() => import('../tools/developer/HTMLEncoder')),
+    CSSMinifier: lazy(() => import('../tools/developer/CSSMinifier')),
+    UserAgentParser: lazy(() => import('../tools/developer/UserAgentParser')),
+    GitCheatsheet: lazy(() => import('../tools/developer/GitCheatsheet')),
+    CodeDiff: lazy(() => import('../tools/developer/CodeDiff')),
+    SQLFormatter: lazy(() => import('../tools/developer/SQLFormatter')),
 
     // Math & Converters
     Calculator: lazy(() => import('../tools/math/Calculator')),
@@ -34,6 +49,11 @@ const toolComponents = {
     PercentageCalculator: lazy(() => import('../tools/math/PercentageCalculator')),
     BinaryConverter: lazy(() => import('../tools/math/BinaryConverter')),
     AgeCalculator: lazy(() => import('../tools/math/AgeCalculator')),
+    CurrencyConverter: lazy(() => import('../tools/math/CurrencyConverter')),
+    GSTCalculator: lazy(() => import('../tools/math/GSTCalculator')),
+    HexDecimal: lazy(() => import('../tools/math/HexDecimal')),
+    AspectRatio: lazy(() => import('../tools/math/AspectRatio')),
+    RomanNumerals: lazy(() => import('../tools/math/RomanNumerals')),
 
     // Utility & Everyday
     Stopwatch: lazy(() => import('../tools/utility/Stopwatch')),
@@ -41,6 +61,11 @@ const toolComponents = {
     TodoList: lazy(() => import('../tools/utility/TodoList')),
     NotesApp: lazy(() => import('../tools/utility/NotesApp')),
     BMICalculator: lazy(() => import('../tools/utility/BMICalculator')),
+    WorldClock: lazy(() => import('../tools/utility/WorldClock')),
+    SpeedTest: lazy(() => import('../tools/utility/SpeedTest')),
+    ScreenResolution: lazy(() => import('../tools/utility/ScreenResolution')),
+    LoanCalculator: lazy(() => import('../tools/utility/LoanCalculator')),
+    DecisionMaker: lazy(() => import('../tools/utility/DecisionMaker')),
 };
 
 // Loading Component
