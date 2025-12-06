@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Play, Pause, Square, Volume2, VolumeX, Globe, User, Filter } from 'lucide-react';
+import { Play, Pause, Square, Volume2, VolumeX } from 'lucide-react';
 import { useToast } from '../../context/ToastContext';
 
 const TextToSpeech = () => {
@@ -11,68 +11,17 @@ const TextToSpeech = () => {
     const [volume, setVolume] = useState(1);
     const [isSpeaking, setIsSpeaking] = useState(false);
     const [isPaused, setIsPaused] = useState(false);
-    const [languageFilter, setLanguageFilter] = useState('all');
-    const [genderFilter, setGenderFilter] = useState('all');
     const { toast } = useToast();
-
-    // Language names mapping
-    const languageNames = {
-        'en': 'English',
-        'hi': 'Hindi',
-        'bn': 'Bengali',
-        'es': 'Spanish',
-        'fr': 'French',
-        'de': 'German',
-        'it': 'Italian',
-        'pt': 'Portuguese',
-        'ru': 'Russian',
-        'ja': 'Japanese',
-        'ko': 'Korean',
-        'zh': 'Chinese',
-        'ar': 'Arabic',
-        'nl': 'Dutch',
-        'pl': 'Polish',
-        'tr': 'Turkish',
-        'vi': 'Vietnamese',
-        'th': 'Thai',
-        'id': 'Indonesian',
-        'ms': 'Malay',
-        'ta': 'Tamil',
-        'te': 'Telugu',
-        'mr': 'Marathi',
-        'gu': 'Gujarati',
-        'kn': 'Kannada',
-        'ml': 'Malayalam',
-        'pa': 'Punjabi',
-        'ur': 'Urdu'
-    };
-
-    // Detect gender from voice name
-    const getVoiceGender = (voice) => {
-        const name = voice.name.toLowerCase();
-        const femaleKeywords = ['female', 'woman', 'girl', 'zira', 'hazel', 'susan', 'linda', 'samantha', 'victoria', 'karen', 'moira', 'tessa', 'fiona', 'veena', 'heera'];
-        const maleKeywords = ['male', 'man', 'boy', 'david', 'mark', 'james', 'richard', 'daniel', 'george', 'rishi', 'hemant'];
-
-        if (femaleKeywords.some(k => name.includes(k))) return 'female';
-        if (maleKeywords.some(k => name.includes(k))) return 'male';
-        return 'unknown';
-    };
 
     // Load available voices
     useEffect(() => {
         const loadVoices = () => {
             const availableVoices = speechSynthesis.getVoices();
-            const processedVoices = availableVoices.map(voice => ({
-                ...voice,
-                gender: getVoiceGender(voice),
-                langCode: voice.lang.split('-')[0].toLowerCase(),
-                langName: languageNames[voice.lang.split('-')[0].toLowerCase()] || voice.lang
-            }));
-            setVoices(processedVoices);
-
-            if (processedVoices.length > 0 && !selectedVoice) {
-                const englishVoice = processedVoices.find(v => v.langCode === 'en');
-                setSelectedVoice(englishVoice?.name || processedVoices[0].name);
+            setVoices(availableVoices);
+            if (availableVoices.length > 0 && !selectedVoice) {
+                // Try to find an English voice
+                const englishVoice = availableVoices.find(v => v.lang.startsWith('en'));
+                setSelectedVoice(englishVoice?.name || availableVoices[0].name);
             }
         };
 
@@ -83,16 +32,6 @@ const TextToSpeech = () => {
             speechSynthesis.cancel();
         };
     }, []);
-
-    // Filter voices
-    const filteredVoices = voices.filter(voice => {
-        if (languageFilter !== 'all' && voice.langCode !== languageFilter) return false;
-        if (genderFilter !== 'all' && voice.gender !== genderFilter) return false;
-        return true;
-    });
-
-    // Get unique languages
-    const availableLanguages = [...new Set(voices.map(v => v.langCode))].sort();
 
     const speak = () => {
         if (!text.trim()) {
@@ -151,31 +90,9 @@ const TextToSpeech = () => {
         setIsPaused(false);
     };
 
-    // Quick voice presets
-    const voicePresets = [
-        { name: 'English (US)', filter: 'en-US' },
-        { name: 'English (UK)', filter: 'en-GB' },
-        { name: 'Hindi', filter: 'hi' },
-        { name: 'Bengali', filter: 'bn' },
-        { name: 'Spanish', filter: 'es' },
-        { name: 'French', filter: 'fr' },
-        { name: 'German', filter: 'de' },
-        { name: 'Japanese', filter: 'ja' }
-    ];
-
-    const selectPreset = (langFilter) => {
-        const matchingVoice = voices.find(v => v.lang.startsWith(langFilter) || v.langCode === langFilter);
-        if (matchingVoice) {
-            setSelectedVoice(matchingVoice.name);
-            toast.success(`Selected: ${matchingVoice.name}`);
-        } else {
-            toast.warning('Voice not available for this language');
-        }
-    };
-
     // Group voices by language
-    const groupedVoices = filteredVoices.reduce((acc, voice) => {
-        const lang = voice.langName;
+    const groupedVoices = voices.reduce((acc, voice) => {
+        const lang = voice.lang.split('-')[0].toUpperCase();
         if (!acc[lang]) acc[lang] = [];
         acc[lang].push(voice);
         return acc;
@@ -192,100 +109,58 @@ const TextToSpeech = () => {
                     value={text}
                     onChange={(e) => setText(e.target.value)}
                     placeholder="Type or paste text here..."
-                    className="textarea-field !min-h-[120px]"
+                    className="textarea-field !min-h-[150px]"
                 />
                 <p className="text-xs text-[var(--text-muted)] mt-1">
                     {text.length} characters
                 </p>
             </div>
 
-            {/* Quick Language Presets */}
-            <div>
-                <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
-                    Quick Language Selection
-                </label>
-                <div className="flex flex-wrap gap-2">
-                    {voicePresets.map((preset) => (
-                        <button
-                            key={preset.filter}
-                            onClick={() => selectPreset(preset.filter)}
-                            className="px-3 py-1.5 text-sm bg-[var(--bg-tertiary)] hover:bg-blue-500/20 rounded-lg transition-colors"
-                        >
-                            {preset.name}
-                        </button>
-                    ))}
-                </div>
-            </div>
-
-            {/* Filters */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {/* Voice Selection */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                     <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
-                        <Globe size={14} className="inline mr-1" />
-                        Filter by Language
-                    </label>
-                    <select
-                        value={languageFilter}
-                        onChange={(e) => setLanguageFilter(e.target.value)}
-                        className="input-field"
-                    >
-                        <option value="all">All Languages ({voices.length})</option>
-                        {availableLanguages.map(lang => (
-                            <option key={lang} value={lang}>
-                                {languageNames[lang] || lang.toUpperCase()} ({voices.filter(v => v.langCode === lang).length})
-                            </option>
-                        ))}
-                    </select>
-                </div>
-
-                <div>
-                    <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
-                        <User size={14} className="inline mr-1" />
-                        Filter by Gender
-                    </label>
-                    <select
-                        value={genderFilter}
-                        onChange={(e) => setGenderFilter(e.target.value)}
-                        className="input-field"
-                    >
-                        <option value="all">All Voices</option>
-                        <option value="female">Female Voices</option>
-                        <option value="male">Male Voices</option>
-                    </select>
-                </div>
-
-                <div>
-                    <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
-                        Select Voice ({filteredVoices.length})
+                        Voice
                     </label>
                     <select
                         value={selectedVoice}
                         onChange={(e) => setSelectedVoice(e.target.value)}
                         className="input-field"
                     >
-                        {Object.entries(groupedVoices).map(([lang, langVoices]) => (
-                            <optgroup key={lang} label={`${lang} (${langVoices.length})`}>
-                                {langVoices.map((voice) => (
+                        {Object.entries(groupedVoices).map(([lang, voices]) => (
+                            <optgroup key={lang} label={lang}>
+                                {voices.map((voice) => (
                                     <option key={voice.name} value={voice.name}>
-                                        {voice.name} {voice.gender !== 'unknown' ? `(${voice.gender})` : ''} {voice.localService ? '★' : ''}
+                                        {voice.name} {voice.localService ? '(Local)' : ''}
                                     </option>
                                 ))}
                             </optgroup>
                         ))}
                     </select>
                 </div>
+
+                <div>
+                    <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
+                        Volume: {Math.round(volume * 100)}%
+                    </label>
+                    <div className="flex items-center gap-3">
+                        <VolumeX size={18} className="text-[var(--text-muted)]" />
+                        <input
+                            type="range"
+                            min="0"
+                            max="1"
+                            step="0.1"
+                            value={volume}
+                            onChange={(e) => setVolume(parseFloat(e.target.value))}
+                            className="flex-1 h-2 bg-[var(--bg-tertiary)] rounded-lg appearance-none cursor-pointer accent-blue-500"
+                        />
+                        <Volume2 size={18} className="text-[var(--text-muted)]" />
+                    </div>
+                </div>
             </div>
 
-            {/* Voice Info */}
-            {selectedVoice && (
-                <div className="p-3 bg-[var(--bg-tertiary)] rounded-xl text-sm">
-                    <span className="text-[var(--text-muted)]">Selected: </span>
-                    <span className="font-medium">{selectedVoice}</span>
-                </div>
-            )}
-
-            {/* Rate, Pitch, Volume */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {/* Rate and Pitch */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                     <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
                         Speed: {rate}x
@@ -299,6 +174,10 @@ const TextToSpeech = () => {
                         onChange={(e) => setRate(parseFloat(e.target.value))}
                         className="w-full h-2 bg-[var(--bg-tertiary)] rounded-lg appearance-none cursor-pointer accent-blue-500"
                     />
+                    <div className="flex justify-between text-xs text-[var(--text-muted)] mt-1">
+                        <span>Slower</span>
+                        <span>Faster</span>
+                    </div>
                 </div>
 
                 <div>
@@ -314,21 +193,10 @@ const TextToSpeech = () => {
                         onChange={(e) => setPitch(parseFloat(e.target.value))}
                         className="w-full h-2 bg-[var(--bg-tertiary)] rounded-lg appearance-none cursor-pointer accent-blue-500"
                     />
-                </div>
-
-                <div>
-                    <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
-                        Volume: {Math.round(volume * 100)}%
-                    </label>
-                    <input
-                        type="range"
-                        min="0"
-                        max="1"
-                        step="0.1"
-                        value={volume}
-                        onChange={(e) => setVolume(parseFloat(e.target.value))}
-                        className="w-full h-2 bg-[var(--bg-tertiary)] rounded-lg appearance-none cursor-pointer accent-blue-500"
-                    />
+                    <div className="flex justify-between text-xs text-[var(--text-muted)] mt-1">
+                        <span>Lower</span>
+                        <span>Higher</span>
+                    </div>
                 </div>
             </div>
 
@@ -360,7 +228,7 @@ const TextToSpeech = () => {
                 )}
             </div>
 
-            {/* Speaking Status */}
+            {/* Status */}
             {isSpeaking && (
                 <div className="flex items-center gap-3 p-4 bg-blue-500/10 border border-blue-500/20 rounded-xl">
                     <div className="flex gap-1">
@@ -377,29 +245,6 @@ const TextToSpeech = () => {
                     </span>
                 </div>
             )}
-
-            {/* Voice Stats */}
-            <div className="p-4 bg-[var(--bg-tertiary)] rounded-xl">
-                <h4 className="font-medium mb-2">Available Voices</h4>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-sm">
-                    <div>
-                        <span className="text-[var(--text-muted)]">Total: </span>
-                        <span className="font-medium">{voices.length}</span>
-                    </div>
-                    <div>
-                        <span className="text-[var(--text-muted)]">Languages: </span>
-                        <span className="font-medium">{availableLanguages.length}</span>
-                    </div>
-                    <div>
-                        <span className="text-[var(--text-muted)]">Female: </span>
-                        <span className="font-medium">{voices.filter(v => v.gender === 'female').length}</span>
-                    </div>
-                    <div>
-                        <span className="text-[var(--text-muted)]">Male: </span>
-                        <span className="font-medium">{voices.filter(v => v.gender === 'male').length}</span>
-                    </div>
-                </div>
-            </div>
 
             {/* Browser Support Note */}
             {voices.length === 0 && (
