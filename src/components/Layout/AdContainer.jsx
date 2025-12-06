@@ -43,9 +43,8 @@ const AdContainer = ({ type = 'banner', className = '' }) => {
             responsive: true
         },
         sticky: {
-            slot: '',
-            style: { display: 'block' },
-            format: 'auto'
+            slot: '9026733346',
+            style: { display: 'inline-block', width: '320px', height: '50px' }
         }
     };
 
