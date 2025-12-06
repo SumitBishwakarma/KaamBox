@@ -31,7 +31,7 @@ const AdContainer = ({ type = 'banner', className = '' }) => {
             style: { display: 'inline-block', width: '300px', height: '600px' }
         },
         banner: {
-            slot: '',
+            slot: '3441581784',
             style: { display: 'block' },
             format: 'auto',
             responsive: true
