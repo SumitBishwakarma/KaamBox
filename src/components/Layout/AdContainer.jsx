@@ -31,25 +31,25 @@ const AdContainer = ({ type = 'banner', className = '' }) => {
             style: { display: 'inline-block', width: '300px', height: '600px' }
         },
         banner: {
-            slot: '', // Add your banner slot here
+            slot: '',
             style: { display: 'block' },
             format: 'auto',
             responsive: true
         },
         ingrid: {
-            slot: '', // Add your in-grid slot here
+            slot: '9653419307',
             style: { display: 'block' },
-            format: 'fluid'
+            format: 'auto',
+            responsive: true
         },
         sticky: {
-            slot: '', // Add your sticky slot here
+            slot: '',
             style: { display: 'block' },
             format: 'auto'
         }
     };
 
     useEffect(() => {
-        // Only push ad if slot is configured and not already loaded
         if (adConfig[type]?.slot && !adLoaded.current && typeof window !== 'undefined') {
             try {
                 (window.adsbygoogle = window.adsbygoogle || []).push({});
@@ -62,7 +62,6 @@ const AdContainer = ({ type = 'banner', className = '' }) => {
 
     const config = adConfig[type];
 
-    // If no slot configured, show placeholder
     if (!config?.slot) {
         return (
             <motion.div
