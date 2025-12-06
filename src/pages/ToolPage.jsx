@@ -1,4 +1,4 @@
-import { Suspense, lazy, useMemo } from 'react';
+import { Suspense, lazy, useMemo, useEffect } from 'react';
 import { useParams, Link, Navigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ChevronRight, Home, Shield } from 'lucide-react';
@@ -94,6 +94,23 @@ const ComingSoon = ({ tool }) => (
 const ToolPage = () => {
     const { id } = useParams();
     const tool = getToolById(id);
+
+    // Dynamic SEO - Update document title and meta description
+    useEffect(() => {
+        if (tool) {
+            document.title = `${tool.name} - Free Online Tool | KaamBox`;
+
+            // Update meta description
+            let metaDesc = document.querySelector('meta[name="description"]');
+            if (metaDesc) {
+                metaDesc.setAttribute('content', `${tool.description} Free online ${tool.name.toLowerCase()} tool. No signup required, 100% privacy focused.`);
+            }
+        }
+
+        return () => {
+            document.title = 'KaamBox - 50+ Free Online Tools';
+        };
+    }, [tool]);
 
     // Get related tools (same category, excluding current)
     const relatedTools = useMemo(() => {
