@@ -1020,26 +1020,6 @@ export const tools = [
         component: 'UTMBuilder',
         tags: ['utm', 'tracking', 'marketing', 'analytics'],
         implemented: true
-    },
-    {
-        id: 'background-remover',
-        name: 'Background Remover',
-        description: 'Remove background from images',
-        icon: 'Eraser',
-        category: 'image',
-        component: 'BackgroundRemover',
-        tags: ['background', 'remove', 'transparent', 'cutout'],
-        implemented: true
-    },
-    {
-        id: 'image-to-transparent',
-        name: 'Image to Transparent',
-        description: 'Add transparency to images',
-        icon: 'Droplets',
-        category: 'image',
-        component: 'ImageToTransparent',
-        tags: ['transparent', 'opacity', 'alpha', 'png'],
-        implemented: true
     }
 ];
 
