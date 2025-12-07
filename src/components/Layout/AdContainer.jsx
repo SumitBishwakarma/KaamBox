@@ -5,8 +5,8 @@ import { motion } from 'framer-motion';
  * AdContainer Component
  * 
  * Adsterra Ads Integration:
- * - Banner (728x90): Top header, mobile sticky
- * - Native: Sidebar, in-grid (next to tools)
+ * - Banner (728x90): Uses inline script
+ * - Native: Uses global script + container div
  */
 
 let adInstanceCounter = 0;
@@ -27,7 +27,6 @@ const AdContainer = ({ type = 'banner', className = '' }) => {
     // Ad configurations
     const bannerKey = '519e011b12e0cc6fa27b8789d7392c40';
     const nativeKey = '2b7d591f67e0fd4183ea4a0ecde7453b';
-    const nativeSrc = '//pl28206264.effectivegatecpm.com/2b7d591f67e0fd4183ea4a0ecde7453b/invoke.js';
 
     // Which ad type to use
     const useNative = type === 'sidebar' || type === 'ingrid' || type === 'native';
@@ -38,21 +37,16 @@ const AdContainer = ({ type = 'banner', className = '' }) => {
         const timer = setTimeout(() => {
             try {
                 if (useNative) {
-                    // Native Banner Ad for sidebar and in-grid
+                    // Native Banner Ad - just create container div
+                    // Script is already loaded globally in index.html
                     const container = document.createElement('div');
                     container.id = `container-${nativeKey}`;
 
-                    const invokeScript = document.createElement('script');
-                    invokeScript.async = true;
-                    invokeScript.setAttribute('data-cfasync', 'false');
-                    invokeScript.src = nativeSrc;
-
                     if (adRef.current) {
                         adRef.current.appendChild(container);
-                        adRef.current.appendChild(invokeScript);
                     }
                 } else {
-                    // Banner Ad (728x90) for header/footer
+                    // Banner Ad (728x90)
                     const optionsScript = document.createElement('script');
                     optionsScript.type = 'text/javascript';
                     optionsScript.text = `
@@ -80,12 +74,12 @@ const AdContainer = ({ type = 'banner', className = '' }) => {
             } catch (err) {
                 console.error('Ad load error:', err);
             }
-        }, 100);
+        }, instanceId * 100);
 
         return () => {
             clearTimeout(timer);
         };
-    }, [useNative]);
+    }, [useNative, instanceId]);
 
     return (
         <motion.div
