@@ -41,8 +41,8 @@ const Home = () => {
             // Insert ad after every 8th card
             if ((index + 1) % 8 === 0 && index < filteredTools.length - 1) {
                 elements.push(
-                    <div key={`ad-${index}`} className="tool-card !p-0 overflow-hidden">
-                        <AdContainer type="ingrid" />
+                    <div key={`ad-${index}`} className="tool-card !p-0 overflow-hidden flex items-center justify-center">
+                        <AdContainer type="banner" />
                     </div>
                 );
             }
