@@ -4,13 +4,8 @@ import { motion } from 'framer-motion';
 /**
  * AdContainer Component
  * 
- * Integrated with Adsterra Ads
- * 
- * Types:
- * - banner: Horizontal banner (728x90)
- * - native: Native Banner ad
- * - sidebar: Sidebar ad (uses native)
- * - ingrid: In-grid ad (uses native)
+ * Integrated with Adsterra Banner Ad (728x90)
+ * Using banner ad for all placements since native has single instance limitation
  */
 
 // Generate unique ID for each ad instance
@@ -23,115 +18,55 @@ const AdContainer = ({ type = 'banner', className = '' }) => {
 
     const sizeMap = {
         banner: 'min-h-[90px] w-full max-w-[728px]',
-        native: 'w-full min-h-[200px]',
-        sidebar: 'w-full min-h-[250px]',
-        ingrid: 'w-full min-h-[200px]',
-        sticky: 'h-[90px] w-full max-w-[728px]'
+        native: 'w-full min-h-[100px]',
+        sidebar: 'w-full min-h-[100px]',
+        ingrid: 'w-full min-h-[100px]',
+        sticky: 'min-h-[90px] w-full max-w-[728px]'
     };
 
-    // Adsterra ad configurations
-    const adConfig = {
-        banner: {
-            type: 'banner',
-            key: '519e011b12e0cc6fa27b8789d7392c40',
-            width: 728,
-            height: 90
-        },
-        native: {
-            type: 'native',
-            key: '2b7d591f67e0fd4183ea4a0ecde7453b',
-            src: '//pl28206264.effectivegatecpm.com/2b7d591f67e0fd4183ea4a0ecde7453b/invoke.js'
-        },
-        sidebar: {
-            type: 'native',
-            key: '2b7d591f67e0fd4183ea4a0ecde7453b',
-            src: '//pl28206264.effectivegatecpm.com/2b7d591f67e0fd4183ea4a0ecde7453b/invoke.js'
-        },
-        ingrid: {
-            type: 'native',
-            key: '2b7d591f67e0fd4183ea4a0ecde7453b',
-            src: '//pl28206264.effectivegatecpm.com/2b7d591f67e0fd4183ea4a0ecde7453b/invoke.js'
-        },
-        sticky: {
-            type: 'banner',
-            key: '519e011b12e0cc6fa27b8789d7392c40',
-            width: 728,
-            height: 90
-        }
-    };
+    // Using Banner ad for all placements
+    const adKey = '519e011b12e0cc6fa27b8789d7392c40';
 
     useEffect(() => {
         if (adLoaded.current || !adRef.current) return;
 
-        const config = adConfig[type];
-        if (!config) return;
-
-        // Small delay to ensure DOM is ready
+        // Small delay to avoid duplicate loading
         const timer = setTimeout(() => {
-            if (config.type === 'banner') {
-                // Banner Ad (728x90)
+            try {
+                // Create unique options for this instance
                 const optionsScript = document.createElement('script');
                 optionsScript.type = 'text/javascript';
                 optionsScript.text = `
-                    atOptions = {
-                        'key' : '${config.key}',
+                    var atOptions_${instanceId} = {
+                        'key' : '${adKey}',
                         'format' : 'iframe',
-                        'height' : ${config.height},
-                        'width' : ${config.width},
+                        'height' : 90,
+                        'width' : 728,
                         'params' : {}
                     };
+                    atOptions = atOptions_${instanceId};
                 `;
 
                 const invokeScript = document.createElement('script');
                 invokeScript.type = 'text/javascript';
-                invokeScript.src = `//www.highperformanceformat.com/${config.key}/invoke.js`;
+                invokeScript.src = `//www.highperformanceformat.com/${adKey}/invoke.js`;
                 invokeScript.async = true;
 
                 if (adRef.current) {
                     adRef.current.appendChild(optionsScript);
                     adRef.current.appendChild(invokeScript);
                 }
-            } else if (config.type === 'native') {
-                // Native Banner Ad - each instance gets unique container ID
-                const uniqueContainerId = `container-${config.key}-${instanceId}`;
 
-                const container = document.createElement('div');
-                container.id = uniqueContainerId;
-
-                const invokeScript = document.createElement('script');
-                invokeScript.async = true;
-                invokeScript.setAttribute('data-cfasync', 'false');
-                invokeScript.src = config.src;
-
-                if (adRef.current) {
-                    adRef.current.appendChild(container);
-                    adRef.current.appendChild(invokeScript);
-                }
+                adLoaded.current = true;
+            } catch (err) {
+                console.error('Ad load error:', err);
             }
-
-            adLoaded.current = true;
-        }, 100);
+        }, instanceId * 200); // Stagger loading to avoid conflicts
 
         return () => {
             clearTimeout(timer);
         };
-    }, [type, instanceId]);
-
-    const config = adConfig[type];
-
-    if (!config) {
-        return (
-            <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className={`ad-container ${sizeMap[type] || ''} ${className}`}
-            >
-                <div className="flex flex-col items-center justify-center h-full">
-                    <span className="text-[var(--text-muted)] text-sm">Ad Space</span>
-                </div>
-            </motion.div>
-        );
-    }
+    }, [instanceId]);
 
     return (
         <motion.div
