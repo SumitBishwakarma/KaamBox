@@ -20,6 +20,16 @@ const toolComponents = {
     ReverseText: lazy(() => import('../tools/text/ReverseText')),
     SlugGenerator: lazy(() => import('../tools/text/SlugGenerator')),
     PrivacyPolicy: lazy(() => import('../tools/text/PrivacyPolicy')),
+    // NEW Text Tools
+    HashtagGenerator: lazy(() => import('../tools/text/HashtagGenerator')),
+    FancyText: lazy(() => import('../tools/text/FancyText')),
+    TextEncrypt: lazy(() => import('../tools/text/TextEncrypt')),
+    WordFrequency: lazy(() => import('../tools/text/WordFrequency')),
+    BioGenerator: lazy(() => import('../tools/text/BioGenerator')),
+    QuoteGenerator: lazy(() => import('../tools/text/QuoteGenerator')),
+    AsciiArtGenerator: lazy(() => import('../tools/text/AsciiArtGenerator')),
+    TextDiffChecker: lazy(() => import('../tools/text/TextDiffChecker')),
+    NameGenerator: lazy(() => import('../tools/text/NameGenerator')),
 
     // Image & Media
     ImageCompressor: lazy(() => import('../tools/image/ImageCompressor')),
@@ -32,6 +42,13 @@ const toolComponents = {
     YoutubeThumbnail: lazy(() => import('../tools/image/YoutubeThumbnail')),
     SVGBlob: lazy(() => import('../tools/image/SVGBlob')),
     MemeGenerator: lazy(() => import('../tools/image/MemeGenerator')),
+    // NEW Image Tools
+    GradientGenerator: lazy(() => import('../tools/image/GradientGenerator')),
+    ImageResizer: lazy(() => import('../tools/image/ImageResizer')),
+    FaviconGenerator: lazy(() => import('../tools/image/FaviconGenerator')),
+    PlaceholderImage: lazy(() => import('../tools/image/PlaceholderImage')),
+    ImageWatermark: lazy(() => import('../tools/image/ImageWatermark')),
+    ColorPaletteGenerator: lazy(() => import('../tools/image/ColorPaletteGenerator')),
 
     // Developer Tools
     JSONFormatter: lazy(() => import('../tools/developer/JSONFormatter')),
@@ -44,6 +61,15 @@ const toolComponents = {
     GitCheatsheet: lazy(() => import('../tools/developer/GitCheatsheet')),
     CodeDiff: lazy(() => import('../tools/developer/CodeDiff')),
     SQLFormatter: lazy(() => import('../tools/developer/SQLFormatter')),
+    // NEW Developer Tools
+    RegexTester: lazy(() => import('../tools/developer/RegexTester')),
+    HashGenerator: lazy(() => import('../tools/developer/HashGenerator')),
+    JWTDecoder: lazy(() => import('../tools/developer/JWTDecoder')),
+    MetaTagsGenerator: lazy(() => import('../tools/developer/MetaTagsGenerator')),
+    CronGenerator: lazy(() => import('../tools/developer/CronGenerator')),
+    RobotsTxtGenerator: lazy(() => import('../tools/developer/RobotsTxtGenerator')),
+    IPAddressLookup: lazy(() => import('../tools/developer/IPAddressLookup')),
+    UTMBuilder: lazy(() => import('../tools/developer/UTMBuilder')),
 
     // Math & Converters
     Calculator: lazy(() => import('../tools/math/Calculator')),
@@ -56,6 +82,17 @@ const toolComponents = {
     HexDecimal: lazy(() => import('../tools/math/HexDecimal')),
     AspectRatio: lazy(() => import('../tools/math/AspectRatio')),
     RomanNumerals: lazy(() => import('../tools/math/RomanNumerals')),
+    // NEW Math Tools
+    TipCalculator: lazy(() => import('../tools/math/TipCalculator')),
+    DiscountCalculator: lazy(() => import('../tools/math/DiscountCalculator')),
+    DateCalculator: lazy(() => import('../tools/math/DateCalculator')),
+    RandomNumber: lazy(() => import('../tools/math/RandomNumber')),
+    InvestmentCalculator: lazy(() => import('../tools/math/InvestmentCalculator')),
+    SalaryCalculator: lazy(() => import('../tools/math/SalaryCalculator')),
+    ScientificCalculator: lazy(() => import('../tools/math/ScientificCalculator')),
+    FuelCostCalculator: lazy(() => import('../tools/math/FuelCostCalculator')),
+    AspectRatioCalculator: lazy(() => import('../tools/math/AspectRatioCalculator')),
+    MeetingCostCalculator: lazy(() => import('../tools/utility/MeetingCostCalculator')),
 
     // Utility & Everyday
     Stopwatch: lazy(() => import('../tools/utility/Stopwatch')),
@@ -68,6 +105,19 @@ const toolComponents = {
     ScreenResolution: lazy(() => import('../tools/utility/ScreenResolution')),
     LoanCalculator: lazy(() => import('../tools/utility/LoanCalculator')),
     DecisionMaker: lazy(() => import('../tools/utility/DecisionMaker')),
+    // NEW Utility Tools
+    TypingSpeedTest: lazy(() => import('../tools/utility/TypingSpeedTest')),
+    CountdownTimer: lazy(() => import('../tools/utility/CountdownTimer')),
+    TimeZoneConverter: lazy(() => import('../tools/utility/TimeZoneConverter')),
+    BarcodeGenerator: lazy(() => import('../tools/utility/BarcodeGenerator')),
+    HabitTracker: lazy(() => import('../tools/utility/HabitTracker')),
+    ExpenseTracker: lazy(() => import('../tools/utility/ExpenseTracker')),
+    Flashcards: lazy(() => import('../tools/utility/Flashcards')),
+    MoodJournal: lazy(() => import('../tools/utility/MoodJournal')),
+    WaterIntakeTracker: lazy(() => import('../tools/utility/WaterIntakeTracker')),
+    VoiceRecorder: lazy(() => import('../tools/utility/VoiceRecorder')),
+    BreathingExercise: lazy(() => import('../tools/utility/BreathingExercise')),
+    StickyNotes: lazy(() => import('../tools/utility/StickyNotes')),
 };
 
 // Loading Component
