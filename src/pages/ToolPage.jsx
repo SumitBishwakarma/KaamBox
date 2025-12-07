@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { ChevronRight, Home, Shield } from 'lucide-react';
 import { getToolById, getToolsByCategory, getCategoryById } from '../data/tools';
 import ToolCard from '../components/UI/ToolCard';
+import AdContainer from '../components/Layout/AdContainer';
 
 // Lazy load all tool components
 const toolComponents = {
@@ -193,6 +194,16 @@ const ToolPage = () => {
                 ) : (
                     <ComingSoon tool={tool} />
                 )}
+            </motion.div>
+
+            {/* Ad below tool */}
+            <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.15 }}
+                className="mt-6"
+            >
+                <AdContainer type="native" />
             </motion.div>
 
             {/* Related Tools */}
