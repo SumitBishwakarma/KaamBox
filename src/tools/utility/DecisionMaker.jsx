@@ -190,7 +190,7 @@ const DecisionMaker = () => {
 
                 {mode === 'dice' && (
                     <div
-                        className="w-24 h-24 bg-white rounded-xl flex items-center justify-center text-5xl shadow-lg"
+                        className="w-24 h-24 bg-[var(--bg-secondary)] border border-[var(--border-primary)] rounded-xl flex items-center justify-center text-5xl shadow-lg"
                     >
                         {result ? ['⚀', '⚁', '⚂', '⚃', '⚄', '⚅'][parseInt(result) - 1] : '🎲'}
                     </div>

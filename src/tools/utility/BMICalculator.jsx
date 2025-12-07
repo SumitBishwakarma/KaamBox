@@ -83,8 +83,8 @@ const BMICalculator = () => {
                 <button
                     onClick={() => setUnit('metric')}
                     className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-all ${unit === 'metric'
-                            ? 'bg-blue-500 text-white'
-                            : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'
+                        ? 'bg-blue-500 text-white'
+                        : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'
                         }`}
                 >
                     Metric (kg/cm)
@@ -92,8 +92,8 @@ const BMICalculator = () => {
                 <button
                     onClick={() => setUnit('imperial')}
                     className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-all ${unit === 'imperial'
-                            ? 'bg-blue-500 text-white'
-                            : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'
+                        ? 'bg-blue-500 text-white'
+                        : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'
                         }`}
                 >
                     Imperial (lb/ft)
@@ -177,7 +177,7 @@ const BMICalculator = () => {
 
                             {/* Indicator */}
                             <div
-                                className="absolute top-0 w-1 h-full bg-white shadow-lg transition-all duration-500"
+                                className="absolute top-0 w-1 h-full bg-[var(--bg-primary)] shadow-lg transition-all duration-500 border-x border-[var(--border-primary)]"
                                 style={{ left: `${scalePosition}%`, transform: 'translateX(-50%)' }}
                             />
 
