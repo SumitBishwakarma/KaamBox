@@ -3,6 +3,7 @@ import { useParams, Link, Navigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ChevronRight, Home, Shield } from 'lucide-react';
 import { getToolById, getToolsByCategory, getCategoryById } from '../data/tools';
+import { getToolSEO } from '../data/toolSEO';
 import ToolCard from '../components/UI/ToolCard';
 import AdContainer from '../components/Layout/AdContainer';
 
@@ -99,13 +100,42 @@ const ToolPage = () => {
     // Dynamic SEO - Update document title and meta description
     useEffect(() => {
         if (tool) {
-            document.title = `${tool.name} - Free Online Tool | KaamBox`;
+            const seoData = getToolSEO(tool.id);
+
+            // Set optimized title
+            document.title = seoData?.title || `${tool.name} - Free Online Tool | KaamBox`;
 
             // Update meta description
             let metaDesc = document.querySelector('meta[name="description"]');
             if (metaDesc) {
-                metaDesc.setAttribute('content', `${tool.description} Free online ${tool.name.toLowerCase()} tool. No signup required, 100% privacy focused.`);
+                metaDesc.setAttribute('content', seoData?.description || `${tool.description} Free online ${tool.name.toLowerCase()} tool. No signup required, 100% privacy focused.`);
             }
+
+            // Update or create meta keywords
+            let metaKeywords = document.querySelector('meta[name="keywords"]');
+            if (seoData?.keywords) {
+                if (!metaKeywords) {
+                    metaKeywords = document.createElement('meta');
+                    metaKeywords.name = 'keywords';
+                    document.head.appendChild(metaKeywords);
+                }
+                metaKeywords.setAttribute('content', seoData.keywords);
+            }
+
+            // Update canonical URL
+            let canonicalLink = document.querySelector('link[rel="canonical"]');
+            if (canonicalLink) {
+                canonicalLink.setAttribute('href', `https://kaambox.online/tools/${tool.id}`);
+            }
+
+            // Update Open Graph tags
+            let ogTitle = document.querySelector('meta[property="og:title"]');
+            let ogDesc = document.querySelector('meta[property="og:description"]');
+            let ogUrl = document.querySelector('meta[property="og:url"]');
+
+            if (ogTitle) ogTitle.setAttribute('content', seoData?.title || tool.name);
+            if (ogDesc) ogDesc.setAttribute('content', seoData?.description || tool.description);
+            if (ogUrl) ogUrl.setAttribute('content', `https://kaambox.online/tools/${tool.id}`);
         }
 
         return () => {
