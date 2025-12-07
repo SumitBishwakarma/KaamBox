@@ -49,6 +49,8 @@ const toolComponents = {
     PlaceholderImage: lazy(() => import('../tools/image/PlaceholderImage')),
     ImageWatermark: lazy(() => import('../tools/image/ImageWatermark')),
     ColorPaletteGenerator: lazy(() => import('../tools/image/ColorPaletteGenerator')),
+    BackgroundRemover: lazy(() => import('../tools/image/BackgroundRemover')),
+    ImageToTransparent: lazy(() => import('../tools/image/ImageToTransparent')),
 
     // Developer Tools
     JSONFormatter: lazy(() => import('../tools/developer/JSONFormatter')),
