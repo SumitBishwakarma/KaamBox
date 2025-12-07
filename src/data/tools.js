@@ -1026,19 +1026,111 @@ export const tools = [
 // Helper functions
 export const getToolById = (id) => tools.find(tool => tool.id === id);
 
-export const getToolsByCategory = (category) => tools.filter(tool => tool.category === category);
+export const getToolsByCategory = (category) => tools.filter(tool => tool.category === category && tool.implemented);
 
 export const getImplementedTools = () => tools.filter(tool => tool.implemented);
 
+// Improved search - only returns implemented tools, better matching
 export const searchTools = (query) => {
     const lowerQuery = query.toLowerCase().trim();
-    if (!lowerQuery) return tools;
+    if (!lowerQuery) return tools.filter(tool => tool.implemented);
 
-    return tools.filter(tool =>
-        tool.name.toLowerCase().includes(lowerQuery) ||
-        tool.description.toLowerCase().includes(lowerQuery) ||
-        tool.tags.some(tag => tag.toLowerCase().includes(lowerQuery))
-    );
+    // Score each tool based on match quality
+    const scoredTools = tools
+        .filter(tool => tool.implemented)
+        .map(tool => {
+            let score = 0;
+            const lowerName = tool.name.toLowerCase();
+            const lowerDesc = tool.description.toLowerCase();
+
+            // Exact name match (highest priority)
+            if (lowerName === lowerQuery) score += 100;
+            // Name starts with query
+            else if (lowerName.startsWith(lowerQuery)) score += 50;
+            // Name contains query
+            else if (lowerName.includes(lowerQuery)) score += 30;
+
+            // Description contains query
+            if (lowerDesc.includes(lowerQuery)) score += 10;
+
+            // Tag matches (important for relevance)
+            tool.tags.forEach(tag => {
+                const lowerTag = tag.toLowerCase();
+                if (lowerTag === lowerQuery) score += 40;
+                else if (lowerTag.includes(lowerQuery) || lowerQuery.includes(lowerTag)) score += 20;
+            });
+
+            return { tool, score };
+        })
+        .filter(item => item.score > 0)
+        .sort((a, b) => b.score - a.score);
+
+    return scoredTools.map(item => item.tool);
+};
+
+// Get related tools based on tag similarity (not just category)
+export const getRelatedTools = (currentTool, limit = 4) => {
+    if (!currentTool) return [];
+
+    const currentTags = currentTool.tags.map(t => t.toLowerCase());
+
+    // Score all other tools by tag similarity
+    const scoredTools = tools
+        .filter(t => t.id !== currentTool.id && t.implemented)
+        .map(tool => {
+            let score = 0;
+
+            // Same category bonus
+            if (tool.category === currentTool.category) {
+                score += 10;
+            }
+
+            // Tag similarity - count matching tags
+            tool.tags.forEach(tag => {
+                const lowerTag = tag.toLowerCase();
+                if (currentTags.includes(lowerTag)) {
+                    score += 15; // Direct tag match
+                } else {
+                    // Partial tag match
+                    currentTags.forEach(ct => {
+                        if (lowerTag.includes(ct) || ct.includes(lowerTag)) {
+                            score += 5;
+                        }
+                    });
+                }
+            });
+
+            // Name similarity
+            const currentWords = currentTool.name.toLowerCase().split(/\s+/);
+            const toolWords = tool.name.toLowerCase().split(/\s+/);
+            currentWords.forEach(word => {
+                if (word.length > 2 && toolWords.some(tw => tw.includes(word))) {
+                    score += 8;
+                }
+            });
+
+            return { tool, score };
+        })
+        .filter(item => item.score > 0)
+        .sort((a, b) => b.score - a.score)
+        .slice(0, limit);
+
+    // If we don't have enough related tools, fill with same category tools
+    if (scoredTools.length < limit) {
+        const existingIds = scoredTools.map(s => s.tool.id);
+        const sameCategoryTools = tools
+            .filter(t =>
+                t.id !== currentTool.id &&
+                t.implemented &&
+                t.category === currentTool.category &&
+                !existingIds.includes(t.id)
+            )
+            .slice(0, limit - scoredTools.length);
+
+        scoredTools.push(...sameCategoryTools.map(tool => ({ tool, score: 5 })));
+    }
+
+    return scoredTools.slice(0, limit).map(item => item.tool);
 };
 
 export const getCategoryById = (id) => categories.find(cat => cat.id === id);

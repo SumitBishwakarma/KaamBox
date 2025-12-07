@@ -2,7 +2,7 @@ import { Suspense, lazy, useMemo, useEffect } from 'react';
 import { useParams, Link, Navigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ChevronRight, Home, Shield } from 'lucide-react';
-import { getToolById, getToolsByCategory, getCategoryById } from '../data/tools';
+import { getToolById, getRelatedTools, getCategoryById } from '../data/tools';
 import { getToolSEO } from '../data/toolSEO';
 import ToolCard from '../components/UI/ToolCard';
 import AdContainer from '../components/Layout/AdContainer';
@@ -194,12 +194,10 @@ const ToolPage = () => {
         };
     }, [tool]);
 
-    // Get related tools (same category, excluding current)
+    // Get related tools (using improved tag similarity algorithm)
     const relatedTools = useMemo(() => {
         if (!tool) return [];
-        return getToolsByCategory(tool.category)
-            .filter(t => t.id !== tool.id && t.implemented)
-            .slice(0, 4);
+        return getRelatedTools(tool, 4);
     }, [tool]);
 
     // Tool not found
