@@ -531,6 +531,544 @@ export const tools = [
         component: 'NotesApp',
         tags: ['notes', 'markdown', 'text', 'save'],
         implemented: true
+    },
+
+    // ============================================
+    // NEW TOOLS BATCH 1 (19 tools)
+    // ============================================
+
+    // Text & Content
+    {
+        id: 'hashtag-generator',
+        name: 'Hashtag Generator',
+        description: 'Generate trending hashtags for social media posts',
+        icon: 'Hash',
+        category: 'text',
+        component: 'HashtagGenerator',
+        tags: ['hashtag', 'social media', 'instagram', 'twitter'],
+        implemented: true
+    },
+    {
+        id: 'fancy-text',
+        name: 'Fancy Text Generator',
+        description: 'Convert text to stylish fonts for social media',
+        icon: 'Wand2',
+        category: 'text',
+        component: 'FancyText',
+        tags: ['fancy', 'font', 'unicode', 'stylish', 'text'],
+        implemented: true
+    },
+    {
+        id: 'text-encrypt',
+        name: 'Text Encrypt/Decrypt',
+        description: 'Encode and decode text with various methods',
+        icon: 'Lock',
+        category: 'text',
+        component: 'TextEncrypt',
+        tags: ['encrypt', 'decrypt', 'encode', 'decode', 'cipher'],
+        implemented: true
+    },
+    {
+        id: 'word-frequency',
+        name: 'Word Frequency Counter',
+        description: 'Analyze how often each word appears in text',
+        icon: 'BarChart3',
+        category: 'text',
+        component: 'WordFrequency',
+        tags: ['word', 'frequency', 'count', 'analyze'],
+        implemented: true
+    },
+    {
+        id: 'bio-generator',
+        name: 'Bio Generator',
+        description: 'Create perfect bios for social media profiles',
+        icon: 'User',
+        category: 'text',
+        component: 'BioGenerator',
+        tags: ['bio', 'social media', 'profile', 'instagram', 'twitter'],
+        implemented: true
+    },
+
+    // Developer Tools
+    {
+        id: 'regex-tester',
+        name: 'Regex Tester',
+        description: 'Test and debug regular expressions in real-time',
+        icon: 'Code',
+        category: 'developer',
+        component: 'RegexTester',
+        tags: ['regex', 'regular expression', 'pattern', 'test'],
+        implemented: true
+    },
+    {
+        id: 'hash-generator',
+        name: 'Hash Generator',
+        description: 'Generate MD5, SHA-1, SHA-256 and more hashes',
+        icon: 'Hash',
+        category: 'developer',
+        component: 'HashGenerator',
+        tags: ['hash', 'md5', 'sha', 'sha256', 'encrypt'],
+        implemented: true
+    },
+    {
+        id: 'jwt-decoder',
+        name: 'JWT Decoder',
+        description: 'Decode and inspect JSON Web Tokens',
+        icon: 'Key',
+        category: 'developer',
+        component: 'JWTDecoder',
+        tags: ['jwt', 'token', 'decode', 'json', 'auth'],
+        implemented: true
+    },
+    {
+        id: 'meta-tags-generator',
+        name: 'Meta Tags Generator',
+        description: 'Generate SEO meta tags for your website',
+        icon: 'FileCode',
+        category: 'developer',
+        component: 'MetaTagsGenerator',
+        tags: ['meta', 'seo', 'tags', 'og', 'twitter'],
+        implemented: true
+    },
+
+    // Image & Media
+    {
+        id: 'gradient-generator',
+        name: 'Gradient Generator',
+        description: 'Create beautiful CSS gradients for your projects',
+        icon: 'Palette',
+        category: 'image',
+        component: 'GradientGenerator',
+        tags: ['gradient', 'css', 'color', 'design'],
+        implemented: true
+    },
+    {
+        id: 'image-resizer',
+        name: 'Image Resizer',
+        description: 'Resize images to any dimension',
+        icon: 'Move',
+        category: 'image',
+        component: 'ImageResizer',
+        tags: ['image', 'resize', 'scale', 'dimension'],
+        implemented: true
+    },
+
+    // Math & Finance
+    {
+        id: 'tip-calculator',
+        name: 'Tip Calculator',
+        description: 'Calculate tips and split the bill',
+        icon: 'Receipt',
+        category: 'math',
+        component: 'TipCalculator',
+        tags: ['tip', 'restaurant', 'bill', 'split'],
+        implemented: true
+    },
+    {
+        id: 'discount-calculator',
+        name: 'Discount Calculator',
+        description: 'Calculate discounted prices quickly',
+        icon: 'Percent',
+        category: 'math',
+        component: 'DiscountCalculator',
+        tags: ['discount', 'sale', 'price', 'save'],
+        implemented: true
+    },
+    {
+        id: 'date-calculator',
+        name: 'Date Calculator',
+        description: 'Calculate difference between dates or add/subtract days',
+        icon: 'Calendar',
+        category: 'math',
+        component: 'DateCalculator',
+        tags: ['date', 'calendar', 'difference', 'days'],
+        implemented: true
+    },
+    {
+        id: 'random-number',
+        name: 'Random Number Generator',
+        description: 'Generate random numbers for any purpose',
+        icon: 'Shuffle',
+        category: 'math',
+        component: 'RandomNumber',
+        tags: ['random', 'number', 'dice', 'lottery'],
+        implemented: true
+    },
+    {
+        id: 'investment-calculator',
+        name: 'Investment Calculator',
+        description: 'Calculate compound interest and future value',
+        icon: 'TrendingUp',
+        category: 'math',
+        component: 'InvestmentCalculator',
+        tags: ['investment', 'compound', 'interest', 'finance'],
+        implemented: true
+    },
+    {
+        id: 'salary-calculator',
+        name: 'Salary Calculator',
+        description: 'Convert salary between hourly, monthly, yearly',
+        icon: 'DollarSign',
+        category: 'math',
+        component: 'SalaryCalculator',
+        tags: ['salary', 'wage', 'hourly', 'yearly'],
+        implemented: true
+    },
+
+    // Utility
+    {
+        id: 'typing-speed-test',
+        name: 'Typing Speed Test',
+        description: 'Test and improve your typing speed',
+        icon: 'Keyboard',
+        category: 'utility',
+        component: 'TypingSpeedTest',
+        tags: ['typing', 'speed', 'wpm', 'test'],
+        implemented: true
+    },
+    {
+        id: 'countdown-timer',
+        name: 'Countdown Timer',
+        description: 'Track time until important events',
+        icon: 'Clock',
+        category: 'utility',
+        component: 'CountdownTimer',
+        tags: ['countdown', 'timer', 'event', 'date'],
+        implemented: true
+    },
+
+    // ============================================
+    // NEW TOOLS BATCH 2 (13 tools)
+    // ============================================
+
+    // Utility
+    {
+        id: 'timezone-converter',
+        name: 'Time Zone Converter',
+        description: 'Convert time between different time zones',
+        icon: 'Globe',
+        category: 'utility',
+        component: 'TimeZoneConverter',
+        tags: ['timezone', 'time', 'convert', 'world'],
+        implemented: true
+    },
+    {
+        id: 'barcode-generator',
+        name: 'Barcode Generator',
+        description: 'Generate barcodes from text',
+        icon: 'Barcode',
+        category: 'utility',
+        component: 'BarcodeGenerator',
+        tags: ['barcode', 'code128', 'scan'],
+        implemented: true
+    },
+    {
+        id: 'habit-tracker',
+        name: 'Habit Tracker',
+        description: 'Build good habits day by day',
+        icon: 'Target',
+        category: 'utility',
+        component: 'HabitTracker',
+        tags: ['habit', 'track', 'streak', 'daily'],
+        implemented: true
+    },
+    {
+        id: 'expense-tracker',
+        name: 'Expense Tracker',
+        description: 'Track your income and expenses',
+        icon: 'Wallet',
+        category: 'utility',
+        component: 'ExpenseTracker',
+        tags: ['expense', 'income', 'money', 'budget'],
+        implemented: true
+    },
+    {
+        id: 'meeting-cost-calculator',
+        name: 'Meeting Cost Calculator',
+        description: 'Calculate the true cost of meetings',
+        icon: 'Users',
+        category: 'utility',
+        component: 'MeetingCostCalculator',
+        tags: ['meeting', 'cost', 'time', 'salary'],
+        implemented: true
+    },
+    {
+        id: 'flashcards',
+        name: 'Flashcards',
+        description: 'Create and study flashcard decks',
+        icon: 'BookOpen',
+        category: 'utility',
+        component: 'Flashcards',
+        tags: ['flashcard', 'study', 'learn', 'memorize'],
+        implemented: true
+    },
+    {
+        id: 'mood-journal',
+        name: 'Mood Journal',
+        description: 'Track your daily mood and feelings',
+        icon: 'Smile',
+        category: 'utility',
+        component: 'MoodJournal',
+        tags: ['mood', 'journal', 'feelings', 'daily'],
+        implemented: true
+    },
+
+    // Image & Media
+    {
+        id: 'favicon-generator',
+        name: 'Favicon Generator',
+        description: 'Create website favicons from text',
+        icon: 'FileImage',
+        category: 'image',
+        component: 'FaviconGenerator',
+        tags: ['favicon', 'icon', 'website', 'logo'],
+        implemented: true
+    },
+    {
+        id: 'placeholder-image',
+        name: 'Placeholder Image',
+        description: 'Create placeholder images for development',
+        icon: 'Image',
+        category: 'image',
+        component: 'PlaceholderImage',
+        tags: ['placeholder', 'dummy', 'mockup', 'image'],
+        implemented: true
+    },
+    {
+        id: 'image-watermark',
+        name: 'Image Watermark',
+        description: 'Add text watermark to images',
+        icon: 'Type',
+        category: 'image',
+        component: 'ImageWatermark',
+        tags: ['watermark', 'image', 'text', 'protect'],
+        implemented: true
+    },
+
+    // Developer Tools
+    {
+        id: 'cron-generator',
+        name: 'Cron Expression Generator',
+        description: 'Build cron expressions for scheduled tasks',
+        icon: 'Clock',
+        category: 'developer',
+        component: 'CronGenerator',
+        tags: ['cron', 'schedule', 'task', 'timer'],
+        implemented: true
+    },
+    {
+        id: 'robots-txt-generator',
+        name: 'robots.txt Generator',
+        description: 'Create robots.txt for search engines',
+        icon: 'FileText',
+        category: 'developer',
+        component: 'RobotsTxtGenerator',
+        tags: ['robots', 'seo', 'crawler', 'search'],
+        implemented: true
+    },
+    {
+        id: 'ip-address-lookup',
+        name: 'IP Address Lookup',
+        description: 'Get geolocation info for any IP',
+        icon: 'MapPin',
+        category: 'developer',
+        component: 'IPAddressLookup',
+        tags: ['ip', 'geolocation', 'location', 'address'],
+        implemented: true
+    },
+
+    // ============================================
+    // NEW TOOLS BATCH 3 (18 tools - completing 50 total)
+    // ============================================
+
+    // Text & Content
+    {
+        id: 'quote-generator',
+        name: 'Quote Generator',
+        description: 'Get inspired with random quotes',
+        icon: 'Quote',
+        category: 'text',
+        component: 'QuoteGenerator',
+        tags: ['quote', 'inspiration', 'motivation'],
+        implemented: true
+    },
+    {
+        id: 'ascii-art-generator',
+        name: 'ASCII Art Generator',
+        description: 'Convert text to ASCII art',
+        icon: 'Type',
+        category: 'text',
+        component: 'AsciiArtGenerator',
+        tags: ['ascii', 'art', 'text', 'font'],
+        implemented: true
+    },
+    {
+        id: 'text-diff-checker',
+        name: 'Text Diff Checker',
+        description: 'Compare two texts and highlight differences',
+        icon: 'FileText',
+        category: 'text',
+        component: 'TextDiffChecker',
+        tags: ['diff', 'compare', 'text', 'changes'],
+        implemented: true
+    },
+    {
+        id: 'name-generator',
+        name: 'Name Generator',
+        description: 'Generate creative names for projects',
+        icon: 'Sparkles',
+        category: 'text',
+        component: 'NameGenerator',
+        tags: ['name', 'business', 'brand', 'generator'],
+        implemented: true
+    },
+    {
+        id: 'slug-generator',
+        name: 'Slug Generator',
+        description: 'Create URL-friendly slugs from text',
+        icon: 'Link',
+        category: 'text',
+        component: 'SlugGenerator',
+        tags: ['slug', 'url', 'seo', 'permalink'],
+        implemented: true
+    },
+
+    // Utility
+    {
+        id: 'water-intake-tracker',
+        name: 'Water Intake Tracker',
+        description: 'Stay hydrated, track your water intake',
+        icon: 'Droplets',
+        category: 'utility',
+        component: 'WaterIntakeTracker',
+        tags: ['water', 'health', 'hydration', 'tracker'],
+        implemented: true
+    },
+    {
+        id: 'voice-recorder',
+        name: 'Voice Recorder',
+        description: 'Record audio notes and memos',
+        icon: 'Mic',
+        category: 'utility',
+        component: 'VoiceRecorder',
+        tags: ['voice', 'audio', 'record', 'memo'],
+        implemented: true
+    },
+    {
+        id: 'breathing-exercise',
+        name: 'Breathing Exercise',
+        description: 'Relax with guided breathing patterns',
+        icon: 'Wind',
+        category: 'utility',
+        component: 'BreathingExercise',
+        tags: ['breathing', 'relax', 'meditation', 'calm'],
+        implemented: true
+    },
+    {
+        id: 'world-clock',
+        name: 'World Clock',
+        description: 'Track time across the globe',
+        icon: 'Globe',
+        category: 'utility',
+        component: 'WorldClock',
+        tags: ['clock', 'time', 'world', 'timezone'],
+        implemented: true
+    },
+    {
+        id: 'todo-list',
+        name: 'Todo List',
+        description: 'Organize your tasks',
+        icon: 'CheckSquare',
+        category: 'utility',
+        component: 'TodoList',
+        tags: ['todo', 'task', 'list', 'productivity'],
+        implemented: true
+    },
+    {
+        id: 'stopwatch',
+        name: 'Stopwatch',
+        description: 'Precise timing with lap tracking',
+        icon: 'Timer',
+        category: 'utility',
+        component: 'Stopwatch',
+        tags: ['stopwatch', 'timer', 'lap', 'time'],
+        implemented: true
+    },
+    {
+        id: 'sticky-notes',
+        name: 'Sticky Notes',
+        description: 'Quick colorful notes',
+        icon: 'StickyNote',
+        category: 'utility',
+        component: 'StickyNotes',
+        tags: ['notes', 'sticky', 'memo', 'reminder'],
+        implemented: true
+    },
+
+    // Math & Finance
+    {
+        id: 'scientific-calculator',
+        name: 'Scientific Calculator',
+        description: 'Advanced calculations at your fingertips',
+        icon: 'Calculator',
+        category: 'math',
+        component: 'ScientificCalculator',
+        tags: ['calculator', 'math', 'scientific', 'trig'],
+        implemented: true
+    },
+    {
+        id: 'fuel-cost-calculator',
+        name: 'Fuel Cost Calculator',
+        description: 'Calculate trip fuel costs',
+        icon: 'Fuel',
+        category: 'math',
+        component: 'FuelCostCalculator',
+        tags: ['fuel', 'gas', 'travel', 'cost'],
+        implemented: true
+    },
+    {
+        id: 'aspect-ratio-calculator',
+        name: 'Aspect Ratio Calculator',
+        description: 'Calculate and scale aspect ratios',
+        icon: 'Ruler',
+        category: 'math',
+        component: 'AspectRatioCalculator',
+        tags: ['aspect', 'ratio', 'scale', 'dimension'],
+        implemented: true
+    },
+
+    // Image & Media
+    {
+        id: 'image-cropper',
+        name: 'Image Cropper',
+        description: 'Crop images to any size or aspect ratio',
+        icon: 'Crop',
+        category: 'image',
+        component: 'ImageCropper',
+        tags: ['crop', 'image', 'resize', 'cut'],
+        implemented: true
+    },
+    {
+        id: 'color-palette-generator',
+        name: 'Color Palette Generator',
+        description: 'Generate harmonious color palettes',
+        icon: 'Palette',
+        category: 'image',
+        component: 'ColorPaletteGenerator',
+        tags: ['color', 'palette', 'scheme', 'design'],
+        implemented: true
+    },
+
+    // Developer Tools
+    {
+        id: 'utm-builder',
+        name: 'UTM Builder',
+        description: 'Create tracking URLs for campaigns',
+        icon: 'Link',
+        category: 'developer',
+        component: 'UTMBuilder',
+        tags: ['utm', 'tracking', 'marketing', 'analytics'],
+        implemented: true
     }
 ];
 

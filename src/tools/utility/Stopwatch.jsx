@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
-import { Play, Pause, RotateCcw, Flag } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Timer, Play, Pause, RotateCcw, Flag, Trash2 } from 'lucide-react';
 
 const Stopwatch = () => {
     const [time, setTime] = useState(0);
@@ -12,151 +13,139 @@ const Stopwatch = () => {
             intervalRef.current = setInterval(() => {
                 setTime(prev => prev + 10);
             }, 10);
-        }
-
-        return () => {
-            if (intervalRef.current) {
-                clearInterval(intervalRef.current);
-            }
-        };
-    }, [isRunning]);
-
-    const startStop = () => {
-        setIsRunning(!isRunning);
-    };
-
-    const reset = () => {
-        setIsRunning(false);
-        setTime(0);
-        setLaps([]);
-        if (intervalRef.current) {
+        } else {
             clearInterval(intervalRef.current);
         }
-    };
-
-    const lap = () => {
-        if (isRunning && time > 0) {
-            const prevLapTime = laps.length > 0 ? laps[0].total : 0;
-            setLaps(prev => [{
-                number: prev.length + 1,
-                lap: time - prevLapTime,
-                total: time
-            }, ...prev]);
-        }
-    };
+        return () => clearInterval(intervalRef.current);
+    }, [isRunning]);
 
     const formatTime = (ms) => {
         const minutes = Math.floor(ms / 60000);
         const seconds = Math.floor((ms % 60000) / 1000);
         const centiseconds = Math.floor((ms % 1000) / 10);
-
-        return {
-            minutes: minutes.toString().padStart(2, '0'),
-            seconds: seconds.toString().padStart(2, '0'),
-            centiseconds: centiseconds.toString().padStart(2, '0')
-        };
+        return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}.${centiseconds.toString().padStart(2, '0')}`;
     };
 
-    const formatted = formatTime(time);
+    const start = () => setIsRunning(true);
+    const pause = () => setIsRunning(false);
+    const reset = () => {
+        setIsRunning(false);
+        setTime(0);
+        setLaps([]);
+    };
 
-    // Find best and worst laps
-    const lapTimes = laps.map(l => l.lap);
-    const bestLap = lapTimes.length > 1 ? Math.min(...lapTimes) : null;
-    const worstLap = lapTimes.length > 1 ? Math.max(...lapTimes) : null;
+    const addLap = () => {
+        const lapTime = laps.length > 0 ? time - laps.reduce((a, b) => a + b, 0) : time;
+        setLaps([...laps, lapTime]);
+    };
+
+    const getBestLap = () => laps.length > 0 ? Math.min(...laps) : null;
+    const getWorstLap = () => laps.length > 0 ? Math.max(...laps) : null;
 
     return (
-        <div className="max-w-lg mx-auto space-y-8">
-            {/* Timer Display */}
-            <div className="text-center py-12">
-                <div className="font-mono text-7xl sm:text-8xl font-light tracking-tight text-[var(--text-primary)]">
-                    <span>{formatted.minutes}</span>
-                    <span className="text-[var(--text-muted)]">:</span>
-                    <span>{formatted.seconds}</span>
-                    <span className="text-[var(--text-muted)]">.</span>
-                    <span className="text-4xl sm:text-5xl">{formatted.centiseconds}</span>
-                </div>
+        <div className="space-y-6">
+            <div className="text-center mb-6">
+                <h2 className="text-lg font-semibold mb-2">Stopwatch</h2>
+                <p className="text-[var(--text-muted)] text-sm">Precise timing with lap tracking</p>
             </div>
 
-            {/* Controls */}
-            <div className="flex justify-center gap-4">
-                {/* Reset / Lap */}
-                <button
-                    onClick={time > 0 && !isRunning ? reset : lap}
-                    disabled={!isRunning && time === 0}
-                    className="w-20 h-20 rounded-full bg-[var(--bg-tertiary)] hover:bg-[var(--bg-secondary)] transition-all flex items-center justify-center disabled:opacity-50"
-                >
-                    {!isRunning && time > 0 ? (
-                        <RotateCcw size={28} />
-                    ) : (
-                        <Flag size={28} />
-                    )}
-                </button>
-
-                {/* Start/Stop */}
-                <button
-                    onClick={startStop}
-                    className={`w-24 h-24 rounded-full transition-all flex items-center justify-center ${isRunning
-                            ? 'bg-red-500 hover:bg-red-600'
-                            : 'bg-green-500 hover:bg-green-600'
-                        }`}
-                >
-                    {isRunning ? (
-                        <Pause size={32} className="text-white" />
-                    ) : (
-                        <Play size={32} className="text-white ml-1" />
-                    )}
-                </button>
-
-                {/* Placeholder for symmetry */}
-                <div className="w-20 h-20" />
-            </div>
-
-            {/* Laps */}
-            {laps.length > 0 && (
-                <div className="bg-[var(--bg-tertiary)] rounded-2xl overflow-hidden">
-                    <div className="grid grid-cols-3 gap-4 p-4 border-b border-[var(--border-color)] text-sm font-medium text-[var(--text-muted)]">
-                        <span>Lap</span>
-                        <span className="text-center">Lap Time</span>
-                        <span className="text-right">Total Time</span>
-                    </div>
-                    <div className="max-h-64 overflow-auto">
-                        {laps.map((lapItem) => {
-                            const lapTime = formatTime(lapItem.lap);
-                            const totalTime = formatTime(lapItem.total);
-                            const isBest = lapItem.lap === bestLap;
-                            const isWorst = lapItem.lap === worstLap;
-
-                            return (
-                                <div
-                                    key={lapItem.number}
-                                    className={`grid grid-cols-3 gap-4 p-4 border-b border-[var(--border-color)] last:border-0 ${isBest ? 'bg-green-500/10' : isWorst ? 'bg-red-500/10' : ''
-                                        }`}
-                                >
-                                    <span className="flex items-center gap-2">
-                                        Lap {lapItem.number}
-                                        {isBest && <span className="text-xs text-green-500">Best</span>}
-                                        {isWorst && <span className="text-xs text-red-500">Worst</span>}
-                                    </span>
-                                    <span className={`text-center font-mono ${isBest ? 'text-green-500' : isWorst ? 'text-red-500' : ''
-                                        }`}>
-                                        {lapTime.minutes}:{lapTime.seconds}.{lapTime.centiseconds}
-                                    </span>
-                                    <span className="text-right font-mono text-[var(--text-muted)]">
-                                        {totalTime.minutes}:{totalTime.seconds}.{totalTime.centiseconds}
-                                    </span>
-                                </div>
-                            );
-                        })}
-                    </div>
+            <div className="space-y-4">
+                {/* Timer Display */}
+                <div className="p-8 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-2xl text-center">
+                    <motion.p
+                        className="text-6xl font-mono font-bold"
+                        animate={{ scale: isRunning ? [1, 1.02, 1] : 1 }}
+                        transition={{ duration: 0.5, repeat: isRunning ? Infinity : 0 }}
+                    >
+                        {formatTime(time)}
+                    </motion.p>
                 </div>
-            )}
 
-            {/* Instructions */}
-            {laps.length === 0 && (
-                <p className="text-center text-sm text-[var(--text-muted)]">
-                    Press the flag button while running to record laps
-                </p>
-            )}
+                {/* Controls */}
+                <div className="flex justify-center gap-4">
+                    {!isRunning ? (
+                        <motion.button
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            onClick={start}
+                            className="w-16 h-16 rounded-full bg-green-500 flex items-center justify-center"
+                        >
+                            <Play className="w-8 h-8 text-white ml-1" />
+                        </motion.button>
+                    ) : (
+                        <motion.button
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            onClick={pause}
+                            className="w-16 h-16 rounded-full bg-yellow-500 flex items-center justify-center"
+                        >
+                            <Pause className="w-8 h-8 text-white" />
+                        </motion.button>
+                    )}
+
+                    <motion.button
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={addLap}
+                        disabled={!isRunning && time === 0}
+                        className="w-16 h-16 rounded-full bg-[var(--accent-primary)] flex items-center justify-center disabled:opacity-50"
+                    >
+                        <Flag className="w-7 h-7 text-white" />
+                    </motion.button>
+
+                    <motion.button
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={reset}
+                        className="w-16 h-16 rounded-full bg-red-500 flex items-center justify-center"
+                    >
+                        <RotateCcw className="w-7 h-7 text-white" />
+                    </motion.button>
+                </div>
+
+                {/* Laps */}
+                {laps.length > 0 && (
+                    <div className="p-4 bg-[var(--bg-tertiary)] rounded-xl">
+                        <div className="flex justify-between items-center mb-3">
+                            <p className="text-sm font-medium">Laps ({laps.length})</p>
+                            <button
+                                onClick={() => setLaps([])}
+                                className="text-red-400 text-xs flex items-center gap-1"
+                            >
+                                <Trash2 className="w-3 h-3" /> Clear
+                            </button>
+                        </div>
+                        <div className="max-h-48 overflow-y-auto space-y-2">
+                            {laps.map((lap, i) => {
+                                const isBest = lap === getBestLap();
+                                const isWorst = lap === getWorstLap() && laps.length > 1;
+                                return (
+                                    <motion.div
+                                        key={i}
+                                        initial={{ opacity: 0, x: -20 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        className={`flex justify-between items-center p-2 rounded-lg ${isBest ? 'bg-green-500/20' : isWorst ? 'bg-red-500/20' : 'bg-[var(--bg-secondary)]'
+                                            }`}
+                                    >
+                                        <span className="text-sm">
+                                            Lap {i + 1}
+                                            {isBest && <span className="ml-2 text-xs text-green-500">Best</span>}
+                                            {isWorst && <span className="ml-2 text-xs text-red-500">Slowest</span>}
+                                        </span>
+                                        <span className={`font-mono ${isBest ? 'text-green-500' : isWorst ? 'text-red-500' : ''}`}>
+                                            {formatTime(lap)}
+                                        </span>
+                                    </motion.div>
+                                );
+                            })}
+                        </div>
+                        <div className="mt-3 pt-3 border-t border-[var(--bg-secondary)] flex justify-between text-sm">
+                            <span className="text-[var(--text-muted)]">Total</span>
+                            <span className="font-mono font-bold">{formatTime(time)}</span>
+                        </div>
+                    </div>
+                )}
+            </div>
         </div>
     );
 };

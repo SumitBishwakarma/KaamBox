@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { Copy, Link } from 'lucide-react';
-import { useToast } from '../../context/ToastContext';
+import { motion } from 'framer-motion';
+import { Copy, Check, ArrowRight, RefreshCw } from 'lucide-react';
 
 const SlugGenerator = () => {
     const [input, setInput] = useState('');
@@ -8,29 +8,43 @@ const SlugGenerator = () => {
     const [lowercase, setLowercase] = useState(true);
     const [removeNumbers, setRemoveNumbers] = useState(false);
     const [maxLength, setMaxLength] = useState(0);
-    const { toast } = useToast();
+    const [copied, setCopied] = useState(false);
 
     const generateSlug = () => {
+        if (!input) return '';
+
         let slug = input
+            .trim()
+            // Remove accents/diacritics
             .normalize('NFD')
-            .replace(/[\u0300-\u036f]/g, '') // Remove accents
-            .replace(/[^\w\s-]/g, '') // Remove special chars
-            .trim();
-
-        if (removeNumbers) {
-            slug = slug.replace(/[0-9]/g, '');
-        }
-
-        slug = slug.replace(/[\s_]+/g, separator);
-        slug = slug.replace(new RegExp(`${separator}+`, 'g'), separator);
+            .replace(/[\u0300-\u036f]/g, '')
+            // Replace special characters with spaces
+            .replace(/[^a-zA-Z0-9\s-]/g, ' ')
+            // Replace multiple spaces with single space
+            .replace(/\s+/g, ' ')
+            .trim()
+            // Replace spaces with separator
+            .replace(/\s/g, separator);
 
         if (lowercase) {
             slug = slug.toLowerCase();
         }
 
-        if (maxLength > 0) {
+        if (removeNumbers) {
+            slug = slug.replace(/[0-9]/g, '');
+        }
+
+        // Clean up multiple separators
+        const sepRegex = new RegExp(`${separator}+`, 'g');
+        slug = slug.replace(sepRegex, separator);
+
+        // Remove leading/trailing separators
+        const trimRegex = new RegExp(`^${separator}|${separator}$`, 'g');
+        slug = slug.replace(trimRegex, '');
+
+        if (maxLength > 0 && slug.length > maxLength) {
             slug = slug.substring(0, maxLength);
-            // Remove trailing separator
+            // Don't end with separator
             if (slug.endsWith(separator)) {
                 slug = slug.slice(0, -1);
             }
@@ -43,118 +57,121 @@ const SlugGenerator = () => {
 
     const copySlug = () => {
         navigator.clipboard.writeText(slug);
-        toast.success('Slug copied to clipboard');
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
     };
 
-    const previewUrl = `https://example.com/${slug || 'your-slug-here'}`;
+    const examples = [
+        "Hello World! This is a Test",
+        "How to Create URL Slugs in JavaScript",
+        "10 Best Practices for SEO in 2024",
+        "Résumé & Portfolio: John's Blog"
+    ];
 
     return (
         <div className="space-y-6">
-            <div>
-                <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
-                    Enter Title or Text
-                </label>
-                <input
-                    type="text"
-                    value={input}
-                    onChange={(e) => setInput(e.target.value)}
-                    placeholder="e.g., My Awesome Blog Post!"
-                    className="input-field"
-                />
+            <div className="text-center mb-6">
+                <h2 className="text-lg font-semibold mb-2">Slug Generator</h2>
+                <p className="text-[var(--text-muted)] text-sm">Create URL-friendly slugs from text</p>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="space-y-4">
                 <div>
-                    <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
-                        Separator
-                    </label>
-                    <select
-                        value={separator}
-                        onChange={(e) => setSeparator(e.target.value)}
-                        className="input-field"
-                    >
-                        <option value="-">Hyphen (-)</option>
-                        <option value="_">Underscore (_)</option>
-                        <option value="">None</option>
-                    </select>
-                </div>
-
-                <div>
-                    <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
-                        Max Length (0 = unlimited)
-                    </label>
-                    <input
-                        type="number"
-                        value={maxLength}
-                        onChange={(e) => setMaxLength(parseInt(e.target.value) || 0)}
-                        min="0"
-                        className="input-field"
+                    <label className="block text-sm font-medium mb-2">Enter Text</label>
+                    <textarea
+                        value={input}
+                        onChange={(e) => setInput(e.target.value)}
+                        placeholder="Enter your title or text..."
+                        className="input w-full h-24 resize-none"
                     />
                 </div>
 
-                <div className="flex items-end">
-                    <label className="flex items-center gap-2 cursor-pointer">
+                <div>
+                    <label className="block text-sm font-medium mb-2">Quick Examples</label>
+                    <div className="flex flex-wrap gap-2">
+                        {examples.map((ex, i) => (
+                            <button
+                                key={i}
+                                onClick={() => setInput(ex)}
+                                className="px-2 py-1 text-xs bg-[var(--bg-tertiary)] rounded-lg hover:bg-[var(--bg-secondary)] truncate max-w-40"
+                            >
+                                {ex}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                    <div>
+                        <label className="block text-sm font-medium mb-2">Separator</label>
+                        <div className="flex gap-2">
+                            {['-', '_', '.'].map(sep => (
+                                <button
+                                    key={sep}
+                                    onClick={() => setSeparator(sep)}
+                                    className={`flex-1 py-2 rounded-lg font-mono text-lg transition-colors ${separator === sep ? 'bg-[var(--accent-primary)] text-white' : 'bg-[var(--bg-tertiary)]'
+                                        }`}
+                                >
+                                    {sep}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium mb-2">Max Length (0 = unlimited)</label>
+                        <input
+                            type="number"
+                            value={maxLength}
+                            onChange={(e) => setMaxLength(parseInt(e.target.value) || 0)}
+                            min="0"
+                            className="input w-full"
+                        />
+                    </div>
+                </div>
+
+                <div className="flex gap-4">
+                    <label className="flex items-center gap-2 text-sm">
                         <input
                             type="checkbox"
                             checked={lowercase}
                             onChange={(e) => setLowercase(e.target.checked)}
-                            className="w-4 h-4 accent-blue-500"
+                            className="rounded"
                         />
-                        <span className="text-sm">Lowercase</span>
+                        Lowercase
                     </label>
-                </div>
-
-                <div className="flex items-end">
-                    <label className="flex items-center gap-2 cursor-pointer">
+                    <label className="flex items-center gap-2 text-sm">
                         <input
                             type="checkbox"
                             checked={removeNumbers}
                             onChange={(e) => setRemoveNumbers(e.target.checked)}
-                            className="w-4 h-4 accent-blue-500"
+                            className="rounded"
                         />
-                        <span className="text-sm">Remove Numbers</span>
+                        Remove Numbers
                     </label>
                 </div>
-            </div>
 
-            <div className="p-4 bg-[var(--bg-tertiary)] rounded-xl">
-                <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium text-[var(--text-secondary)]">Generated Slug</span>
-                    <button
-                        onClick={copySlug}
-                        className="btn-secondary !py-1.5 !px-3"
-                        disabled={!slug}
+                {slug && (
+                    <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="p-4 bg-[var(--bg-tertiary)] rounded-xl"
                     >
-                        <Copy size={16} />
-                        Copy
-                    </button>
-                </div>
-                <p className="font-mono text-xl text-blue-400 break-all">
-                    {slug || 'your-slug-will-appear-here'}
-                </p>
-                <p className="text-xs text-[var(--text-muted)] mt-2">
-                    {slug.length} characters
-                </p>
-            </div>
+                        <p className="text-xs text-[var(--text-muted)] mb-2">Generated Slug:</p>
+                        <p className="font-mono text-lg text-green-400 break-all">{slug}</p>
+                        <p className="text-xs text-[var(--text-muted)] mt-2">{slug.length} characters</p>
+                    </motion.div>
+                )}
 
-            <div className="p-4 bg-[var(--bg-tertiary)] rounded-xl">
-                <div className="flex items-center gap-2 mb-2">
-                    <Link size={16} className="text-green-400" />
-                    <span className="text-sm font-medium text-[var(--text-secondary)]">URL Preview</span>
-                </div>
-                <p className="font-mono text-sm text-green-400 break-all">
-                    {previewUrl}
-                </p>
-            </div>
-
-            <div className="p-4 bg-blue-500/10 border border-blue-500/20 rounded-xl">
-                <h4 className="font-medium mb-2">SEO Tips</h4>
-                <ul className="text-sm text-[var(--text-secondary)] space-y-1">
-                    <li>• Keep slugs short and descriptive (50-60 characters max)</li>
-                    <li>• Use hyphens to separate words</li>
-                    <li>• Include your main keyword</li>
-                    <li>• Avoid stop words (a, the, is, etc.) when possible</li>
-                </ul>
+                <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={copySlug}
+                    disabled={!slug}
+                    className="btn-primary w-full"
+                >
+                    {copied ? <Check className="w-4 h-4 mr-2" /> : <Copy className="w-4 h-4 mr-2" />}
+                    {copied ? 'Copied!' : 'Copy Slug'}
+                </motion.button>
             </div>
         </div>
     );

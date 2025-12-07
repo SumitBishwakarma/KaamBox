@@ -1,218 +1,187 @@
 import { useState, useEffect } from 'react';
-import { Plus, Trash2, Clock, Globe } from 'lucide-react';
-import { useToast } from '../../context/ToastContext';
-
-const timezones = [
-    { id: 'local', name: 'Local Time', offset: null },
-    { id: 'UTC', name: 'UTC', offset: 0 },
-    { id: 'America/New_York', name: 'New York', offset: -5 },
-    { id: 'America/Los_Angeles', name: 'Los Angeles', offset: -8 },
-    { id: 'America/Chicago', name: 'Chicago', offset: -6 },
-    { id: 'Europe/London', name: 'London', offset: 0 },
-    { id: 'Europe/Paris', name: 'Paris', offset: 1 },
-    { id: 'Europe/Berlin', name: 'Berlin', offset: 1 },
-    { id: 'Europe/Moscow', name: 'Moscow', offset: 3 },
-    { id: 'Asia/Dubai', name: 'Dubai', offset: 4 },
-    { id: 'Asia/Kolkata', name: 'India (IST)', offset: 5.5 },
-    { id: 'Asia/Dhaka', name: 'Bangladesh', offset: 6 },
-    { id: 'Asia/Bangkok', name: 'Bangkok', offset: 7 },
-    { id: 'Asia/Singapore', name: 'Singapore', offset: 8 },
-    { id: 'Asia/Hong_Kong', name: 'Hong Kong', offset: 8 },
-    { id: 'Asia/Shanghai', name: 'Shanghai', offset: 8 },
-    { id: 'Asia/Tokyo', name: 'Tokyo', offset: 9 },
-    { id: 'Asia/Seoul', name: 'Seoul', offset: 9 },
-    { id: 'Australia/Sydney', name: 'Sydney', offset: 11 },
-    { id: 'Pacific/Auckland', name: 'Auckland', offset: 13 }
-];
+import { motion } from 'framer-motion';
+import { Globe, Clock, Plus, Trash2, RefreshCw } from 'lucide-react';
 
 const WorldClock = () => {
-    const [currentTime, setCurrentTime] = useState(new Date());
-    const [selectedTimezones, setSelectedTimezones] = useState(['local', 'UTC', 'America/New_York', 'Asia/Kolkata']);
-    const { toast } = useToast();
+    const [clocks, setClocks] = useState([
+        { id: 1, timezone: 'America/New_York', name: 'New York' },
+        { id: 2, timezone: 'Europe/London', name: 'London' },
+        { id: 3, timezone: 'Asia/Tokyo', name: 'Tokyo' }
+    ]);
+    const [now, setNow] = useState(new Date());
+    const [showAdd, setShowAdd] = useState(false);
+
+    const timezones = [
+        { id: 'America/New_York', name: 'New York' },
+        { id: 'America/Los_Angeles', name: 'Los Angeles' },
+        { id: 'America/Chicago', name: 'Chicago' },
+        { id: 'Europe/London', name: 'London' },
+        { id: 'Europe/Paris', name: 'Paris' },
+        { id: 'Europe/Berlin', name: 'Berlin' },
+        { id: 'Europe/Moscow', name: 'Moscow' },
+        { id: 'Asia/Tokyo', name: 'Tokyo' },
+        { id: 'Asia/Shanghai', name: 'Shanghai' },
+        { id: 'Asia/Kolkata', name: 'Mumbai' },
+        { id: 'Asia/Dubai', name: 'Dubai' },
+        { id: 'Asia/Singapore', name: 'Singapore' },
+        { id: 'Asia/Hong_Kong', name: 'Hong Kong' },
+        { id: 'Asia/Seoul', name: 'Seoul' },
+        { id: 'Australia/Sydney', name: 'Sydney' },
+        { id: 'Pacific/Auckland', name: 'Auckland' },
+        { id: 'Asia/Dhaka', name: 'Dhaka' },
+        { id: 'Africa/Cairo', name: 'Cairo' }
+    ];
 
     useEffect(() => {
-        const interval = setInterval(() => {
-            setCurrentTime(new Date());
-        }, 1000);
-        return () => clearInterval(interval);
+        const timer = setInterval(() => setNow(new Date()), 1000);
+        return () => clearInterval(timer);
     }, []);
 
-    const getTimeForTimezone = (tz) => {
-        if (tz.offset === null) {
-            return currentTime;
-        }
-        const utc = currentTime.getTime() + currentTime.getTimezoneOffset() * 60000;
-        return new Date(utc + tz.offset * 3600000);
-    };
+    useEffect(() => {
+        localStorage.setItem('worldClocks', JSON.stringify(clocks));
+    }, [clocks]);
 
-    const formatTime = (date) => {
-        return date.toLocaleTimeString('en-US', {
+    useEffect(() => {
+        const saved = localStorage.getItem('worldClocks');
+        if (saved) setClocks(JSON.parse(saved));
+    }, []);
+
+    const getTimeInZone = (timezone) => {
+        return new Intl.DateTimeFormat('en-US', {
+            timeZone: timezone,
             hour: '2-digit',
             minute: '2-digit',
             second: '2-digit',
             hour12: true
-        });
+        }).format(now);
     };
 
-    const formatDate = (date) => {
-        return date.toLocaleDateString('en-US', {
+    const getDateInZone = (timezone) => {
+        return new Intl.DateTimeFormat('en-US', {
+            timeZone: timezone,
             weekday: 'short',
             month: 'short',
             day: 'numeric'
+        }).format(now);
+    };
+
+    const getOffset = (timezone) => {
+        const formatter = new Intl.DateTimeFormat('en', {
+            timeZone: timezone,
+            timeZoneName: 'shortOffset'
         });
+        const parts = formatter.formatToParts(now);
+        const offsetPart = parts.find(p => p.type === 'timeZoneName');
+        return offsetPart?.value || '';
     };
 
-    const addTimezone = (id) => {
-        if (!selectedTimezones.includes(id)) {
-            setSelectedTimezones([...selectedTimezones, id]);
-            toast.success('Timezone added');
-        }
+    const addClock = (tz) => {
+        if (clocks.find(c => c.timezone === tz.id)) return;
+        setClocks([...clocks, { id: Date.now(), timezone: tz.id, name: tz.name }]);
+        setShowAdd(false);
     };
 
-    const removeTimezone = (id) => {
-        if (selectedTimezones.length > 1) {
-            setSelectedTimezones(selectedTimezones.filter(t => t !== id));
-        }
+    const removeClock = (id) => {
+        setClocks(clocks.filter(c => c.id !== id));
     };
 
-    const getClockAngle = (date) => {
-        const hours = date.getHours() % 12;
-        const minutes = date.getMinutes();
-        const seconds = date.getSeconds();
-        return {
-            hour: (hours * 30) + (minutes * 0.5),
-            minute: minutes * 6,
-            second: seconds * 6
-        };
+    const isNight = (timezone) => {
+        const hour = parseInt(new Intl.DateTimeFormat('en-US', {
+            timeZone: timezone,
+            hour: 'numeric',
+            hour12: false
+        }).format(now));
+        return hour >= 20 || hour < 6;
     };
-
-    const availableTimezones = timezones.filter(tz => !selectedTimezones.includes(tz.id));
 
     return (
         <div className="space-y-6">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                {selectedTimezones.map(tzId => {
-                    const tz = timezones.find(t => t.id === tzId);
-                    if (!tz) return null;
-                    const time = getTimeForTimezone(tz);
-                    const angles = getClockAngle(time);
-
-                    return (
-                        <div key={tzId} className="p-4 bg-[var(--bg-tertiary)] rounded-xl">
-                            <div className="flex items-center justify-between mb-3">
-                                <div className="flex items-center gap-2">
-                                    <Globe size={16} className="text-blue-400" />
-                                    <span className="font-medium text-sm">{tz.name}</span>
-                                </div>
-                                {selectedTimezones.length > 1 && (
-                                    <button
-                                        onClick={() => removeTimezone(tzId)}
-                                        className="p-1 hover:bg-red-500/20 rounded text-red-400"
-                                    >
-                                        <Trash2 size={14} />
-                                    </button>
-                                )}
-                            </div>
-
-                            <div className="flex justify-center mb-3">
-                                <div className="relative w-24 h-24 rounded-full border-2 border-[var(--border-primary)] bg-[var(--bg-secondary)]">
-                                    {/* Hour markers */}
-                                    {[...Array(12)].map((_, i) => (
-                                        <div
-                                            key={i}
-                                            className="absolute w-1 h-2 bg-[var(--text-muted)]"
-                                            style={{
-                                                left: '50%',
-                                                top: '4px',
-                                                transform: `translateX(-50%) rotate(${i * 30}deg)`,
-                                                transformOrigin: '50% 44px'
-                                            }}
-                                        />
-                                    ))}
-                                    {/* Hour hand */}
-                                    <div
-                                        className="absolute w-1 h-6 bg-white rounded-full"
-                                        style={{
-                                            left: '50%',
-                                            bottom: '50%',
-                                            transform: `translateX(-50%) rotate(${angles.hour}deg)`,
-                                            transformOrigin: '50% 100%'
-                                        }}
-                                    />
-                                    {/* Minute hand */}
-                                    <div
-                                        className="absolute w-0.5 h-8 bg-blue-400 rounded-full"
-                                        style={{
-                                            left: '50%',
-                                            bottom: '50%',
-                                            transform: `translateX(-50%) rotate(${angles.minute}deg)`,
-                                            transformOrigin: '50% 100%'
-                                        }}
-                                    />
-                                    {/* Second hand */}
-                                    <div
-                                        className="absolute w-0.5 h-9 bg-red-400 rounded-full"
-                                        style={{
-                                            left: '50%',
-                                            bottom: '50%',
-                                            transform: `translateX(-50%) rotate(${angles.second}deg)`,
-                                            transformOrigin: '50% 100%'
-                                        }}
-                                    />
-                                    {/* Center dot */}
-                                    <div className="absolute w-2 h-2 bg-white rounded-full left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" />
-                                </div>
-                            </div>
-
-                            <div className="text-center">
-                                <p className="text-2xl font-mono font-bold">{formatTime(time)}</p>
-                                <p className="text-sm text-[var(--text-muted)]">{formatDate(time)}</p>
-                                {tz.offset !== null && (
-                                    <p className="text-xs text-[var(--text-muted)] mt-1">
-                                        UTC{tz.offset >= 0 ? '+' : ''}{tz.offset}
-                                    </p>
-                                )}
-                            </div>
-                        </div>
-                    );
-                })}
+            <div className="text-center mb-6">
+                <h2 className="text-lg font-semibold mb-2">World Clock</h2>
+                <p className="text-[var(--text-muted)] text-sm">Track time across the globe</p>
             </div>
 
-            {availableTimezones.length > 0 && (
-                <div>
-                    <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
-                        Add Timezone
-                    </label>
-                    <div className="flex flex-wrap gap-2">
-                        {availableTimezones.slice(0, 6).map(tz => (
+            <div className="space-y-4">
+                {/* Local Time */}
+                <div className="p-6 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-2xl text-center">
+                    <p className="text-sm text-[var(--text-muted)]">Your Local Time</p>
+                    <p className="text-4xl font-mono font-bold mt-2">
+                        {now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+                    </p>
+                    <p className="text-sm text-[var(--text-muted)] mt-1">
+                        {now.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}
+                    </p>
+                </div>
+
+                {/* World Clocks */}
+                <div className="grid gap-3">
+                    {clocks.map(clock => (
+                        <motion.div
+                            key={clock.id}
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            className={`p-4 rounded-xl flex items-center justify-between ${isNight(clock.timezone)
+                                    ? 'bg-gradient-to-r from-slate-800/50 to-slate-900/50'
+                                    : 'bg-[var(--bg-tertiary)]'
+                                }`}
+                        >
+                            <div className="flex items-center gap-3">
+                                <div className="text-2xl">
+                                    {isNight(clock.timezone) ? '🌙' : '☀️'}
+                                </div>
+                                <div>
+                                    <p className="font-medium">{clock.name}</p>
+                                    <p className="text-xs text-[var(--text-muted)]">
+                                        {getDateInZone(clock.timezone)} • {getOffset(clock.timezone)}
+                                    </p>
+                                </div>
+                            </div>
+                            <div className="flex items-center gap-3">
+                                <p className="text-xl font-mono font-bold">
+                                    {getTimeInZone(clock.timezone)}
+                                </p>
+                                <motion.button
+                                    whileHover={{ scale: 1.1 }}
+                                    whileTap={{ scale: 0.9 }}
+                                    onClick={() => removeClock(clock.id)}
+                                    className="p-1 rounded hover:bg-red-500/20 text-red-400"
+                                >
+                                    <Trash2 className="w-4 h-4" />
+                                </motion.button>
+                            </div>
+                        </motion.div>
+                    ))}
+                </div>
+
+                {/* Add Clock */}
+                <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => setShowAdd(!showAdd)}
+                    className="w-full p-3 rounded-xl bg-[var(--bg-tertiary)] flex items-center justify-center gap-2"
+                >
+                    <Plus className="w-4 h-4" />
+                    Add City
+                </motion.button>
+
+                {showAdd && (
+                    <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        className="grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-64 overflow-y-auto"
+                    >
+                        {timezones.filter(tz => !clocks.find(c => c.timezone === tz.id)).map(tz => (
                             <button
                                 key={tz.id}
-                                onClick={() => addTimezone(tz.id)}
-                                className="flex items-center gap-1 px-3 py-1.5 text-sm bg-[var(--bg-tertiary)] hover:bg-blue-500/20 rounded-lg transition-colors"
+                                onClick={() => addClock(tz)}
+                                className="p-2 text-sm bg-[var(--bg-tertiary)] rounded-lg hover:bg-[var(--bg-secondary)] transition-colors"
                             >
-                                <Plus size={14} />
                                 {tz.name}
                             </button>
                         ))}
-                        {availableTimezones.length > 6 && (
-                            <select
-                                onChange={(e) => {
-                                    if (e.target.value) {
-                                        addTimezone(e.target.value);
-                                        e.target.value = '';
-                                    }
-                                }}
-                                className="input-field !py-1.5 !w-auto"
-                            >
-                                <option value="">More...</option>
-                                {availableTimezones.slice(6).map(tz => (
-                                    <option key={tz.id} value={tz.id}>{tz.name}</option>
-                                ))}
-                            </select>
-                        )}
-                    </div>
-                </div>
-            )}
+                    </motion.div>
+                )}
+            </div>
         </div>
     );
 };
