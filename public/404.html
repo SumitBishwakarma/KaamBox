@@ -5,16 +5,14 @@
     <meta charset="utf-8">
     <title>KaamBox</title>
     <script type="text/javascript">
-        // Single Page Apps for GitHub Pages
-        // MIT License
-        // https://github.com/rafgraph/spa-github-pages
-        var pathSegmentsToKeep = 1;
+        // Simple redirect for GitHub Pages SPA
+        // Redirect all 404s to index.html with the path as a query parameter
+        var pathSegmentsToKeep = 0;
         var l = window.location;
         l.replace(
             l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
-            l.pathname.split('/').slice(0, 1 + pathSegmentsToKeep).join('/') + '/?/' +
-            l.pathname.slice(1).split('/').slice(pathSegmentsToKeep).join('/').replace(/&/g, '~and~') +
-            (l.search ? '&' + l.search.slice(1).replace(/&/g, '~and~') : '') +
+            '/?p=' + l.pathname.slice(1).replace(/&/g, '~and~') +
+            (l.search ? '&q=' + l.search.slice(1).replace(/&/g, '~and~') : '') +
             l.hash
         );
     </script>
