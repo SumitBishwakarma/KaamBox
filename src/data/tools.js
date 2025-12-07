@@ -922,17 +922,6 @@ export const tools = [
         tags: ['name', 'business', 'brand', 'generator'],
         implemented: true
     },
-    {
-        id: 'slug-generator',
-        name: 'Slug Generator',
-        description: 'Create URL-friendly slugs from text',
-        icon: 'Link',
-        category: 'text',
-        component: 'SlugGenerator',
-        tags: ['slug', 'url', 'seo', 'permalink'],
-        implemented: true
-    },
-
     // Utility
     {
         id: 'water-intake-tracker',
@@ -964,36 +953,7 @@ export const tools = [
         tags: ['breathing', 'relax', 'meditation', 'calm'],
         implemented: true
     },
-    {
-        id: 'world-clock',
-        name: 'World Clock',
-        description: 'Track time across the globe',
-        icon: 'Globe',
-        category: 'utility',
-        component: 'WorldClock',
-        tags: ['clock', 'time', 'world', 'timezone'],
-        implemented: true
-    },
-    {
-        id: 'todo-list',
-        name: 'Todo List',
-        description: 'Organize your tasks',
-        icon: 'CheckSquare',
-        category: 'utility',
-        component: 'TodoList',
-        tags: ['todo', 'task', 'list', 'productivity'],
-        implemented: true
-    },
-    {
-        id: 'stopwatch',
-        name: 'Stopwatch',
-        description: 'Precise timing with lap tracking',
-        icon: 'Timer',
-        category: 'utility',
-        component: 'Stopwatch',
-        tags: ['stopwatch', 'timer', 'lap', 'time'],
-        implemented: true
-    },
+
     {
         id: 'sticky-notes',
         name: 'Sticky Notes',
@@ -1038,16 +998,7 @@ export const tools = [
     },
 
     // Image & Media
-    {
-        id: 'image-cropper',
-        name: 'Image Cropper',
-        description: 'Crop images to any size or aspect ratio',
-        icon: 'Crop',
-        category: 'image',
-        component: 'ImageCropper',
-        tags: ['crop', 'image', 'resize', 'cut'],
-        implemented: true
-    },
+
     {
         id: 'color-palette-generator',
         name: 'Color Palette Generator',
