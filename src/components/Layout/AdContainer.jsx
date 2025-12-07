@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 
 /**
@@ -13,9 +13,13 @@ import { motion } from 'framer-motion';
  * - ingrid: In-grid ad (uses native)
  */
 
+// Generate unique ID for each ad instance
+let adInstanceCounter = 0;
+
 const AdContainer = ({ type = 'banner', className = '' }) => {
     const adRef = useRef(null);
     const adLoaded = useRef(false);
+    const [instanceId] = useState(() => ++adInstanceCounter);
 
     const sizeMap = {
         banner: 'min-h-[90px] w-full max-w-[728px]',
@@ -62,49 +66,56 @@ const AdContainer = ({ type = 'banner', className = '' }) => {
         const config = adConfig[type];
         if (!config) return;
 
-        if (config.type === 'banner') {
-            // Banner Ad (728x90)
-            const optionsScript = document.createElement('script');
-            optionsScript.type = 'text/javascript';
-            optionsScript.text = `
-                atOptions = {
-                    'key' : '${config.key}',
-                    'format' : 'iframe',
-                    'height' : ${config.height},
-                    'width' : ${config.width},
-                    'params' : {}
-                };
-            `;
+        // Small delay to ensure DOM is ready
+        const timer = setTimeout(() => {
+            if (config.type === 'banner') {
+                // Banner Ad (728x90)
+                const optionsScript = document.createElement('script');
+                optionsScript.type = 'text/javascript';
+                optionsScript.text = `
+                    atOptions = {
+                        'key' : '${config.key}',
+                        'format' : 'iframe',
+                        'height' : ${config.height},
+                        'width' : ${config.width},
+                        'params' : {}
+                    };
+                `;
 
-            const invokeScript = document.createElement('script');
-            invokeScript.type = 'text/javascript';
-            invokeScript.src = `//www.highperformanceformat.com/${config.key}/invoke.js`;
-            invokeScript.async = true;
+                const invokeScript = document.createElement('script');
+                invokeScript.type = 'text/javascript';
+                invokeScript.src = `//www.highperformanceformat.com/${config.key}/invoke.js`;
+                invokeScript.async = true;
 
-            adRef.current.appendChild(optionsScript);
-            adRef.current.appendChild(invokeScript);
-        } else if (config.type === 'native') {
-            // Native Banner Ad
-            const container = document.createElement('div');
-            container.id = `container-${config.key}`;
+                if (adRef.current) {
+                    adRef.current.appendChild(optionsScript);
+                    adRef.current.appendChild(invokeScript);
+                }
+            } else if (config.type === 'native') {
+                // Native Banner Ad - each instance gets unique container ID
+                const uniqueContainerId = `container-${config.key}-${instanceId}`;
 
-            const invokeScript = document.createElement('script');
-            invokeScript.async = true;
-            invokeScript.setAttribute('data-cfasync', 'false');
-            invokeScript.src = config.src;
+                const container = document.createElement('div');
+                container.id = uniqueContainerId;
 
-            adRef.current.appendChild(invokeScript);
-            adRef.current.appendChild(container);
-        }
+                const invokeScript = document.createElement('script');
+                invokeScript.async = true;
+                invokeScript.setAttribute('data-cfasync', 'false');
+                invokeScript.src = config.src;
 
-        adLoaded.current = true;
+                if (adRef.current) {
+                    adRef.current.appendChild(container);
+                    adRef.current.appendChild(invokeScript);
+                }
+            }
+
+            adLoaded.current = true;
+        }, 100);
 
         return () => {
-            if (adRef.current) {
-                adRef.current.innerHTML = '';
-            }
+            clearTimeout(timer);
         };
-    }, [type]);
+    }, [type, instanceId]);
 
     const config = adConfig[type];
 
