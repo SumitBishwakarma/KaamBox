@@ -119,6 +119,14 @@ const toolComponents = {
     VoiceRecorder: lazy(() => import('../tools/utility/VoiceRecorder')),
     BreathingExercise: lazy(() => import('../tools/utility/BreathingExercise')),
     StickyNotes: lazy(() => import('../tools/utility/StickyNotes')),
+
+    // AI Tools
+    AIPromptGenerator: lazy(() => import('../tools/ai/AIPromptGenerator')),
+    AIParaphraser: lazy(() => import('../tools/ai/AIParaphraser')),
+    AISummarizer: lazy(() => import('../tools/ai/AISummarizer')),
+    AIEmailWriter: lazy(() => import('../tools/ai/AIEmailWriter')),
+    AITitleGenerator: lazy(() => import('../tools/ai/AITitleGenerator')),
+    AIStoryGenerator: lazy(() => import('../tools/ai/AIStoryGenerator')),
 };
 
 // Loading Component

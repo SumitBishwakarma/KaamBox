@@ -9,7 +9,8 @@ export const categories = [
     { id: 'image', name: 'Image & Media', icon: 'Image', color: '#8b5cf6' },
     { id: 'developer', name: 'Developer Tools', icon: 'Code', color: '#10b981' },
     { id: 'math', name: 'Math & Converters', icon: 'Calculator', color: '#f59e0b' },
-    { id: 'utility', name: 'Utility & Everyday', icon: 'Wrench', color: '#ef4444' }
+    { id: 'utility', name: 'Utility & Everyday', icon: 'Wrench', color: '#ef4444' },
+    { id: 'ai', name: 'AI Tools', icon: 'Brain', color: '#ec4899' }
 ];
 
 export const tools = [
@@ -1019,6 +1020,70 @@ export const tools = [
         category: 'developer',
         component: 'UTMBuilder',
         tags: ['utm', 'tracking', 'marketing', 'analytics'],
+        implemented: true
+    },
+
+    // ============================================
+    // CATEGORY F: AI Tools (6 tools)
+    // ============================================
+    {
+        id: 'ai-prompt-generator',
+        name: 'AI Prompt Generator',
+        description: 'Generate perfect prompts for ChatGPT, Midjourney, DALL-E & more',
+        icon: 'Wand2',
+        category: 'ai',
+        component: 'AIPromptGenerator',
+        tags: ['ai', 'prompt', 'chatgpt', 'midjourney', 'dalle', 'claude'],
+        implemented: true
+    },
+    {
+        id: 'ai-paraphraser',
+        name: 'AI Paraphraser',
+        description: 'Rewrite text in different styles and tones',
+        icon: 'RefreshCw',
+        category: 'ai',
+        component: 'AIParaphraser',
+        tags: ['ai', 'paraphrase', 'rewrite', 'text', 'style'],
+        implemented: true
+    },
+    {
+        id: 'ai-summarizer',
+        name: 'AI Summarizer',
+        description: 'Summarize long texts into key insights',
+        icon: 'FileText',
+        category: 'ai',
+        component: 'AISummarizer',
+        tags: ['ai', 'summary', 'summarize', 'text', 'extract'],
+        implemented: true
+    },
+    {
+        id: 'ai-email-writer',
+        name: 'AI Email Writer',
+        description: 'Generate professional emails instantly',
+        icon: 'Mail',
+        category: 'ai',
+        component: 'AIEmailWriter',
+        tags: ['ai', 'email', 'write', 'professional', 'business'],
+        implemented: true
+    },
+    {
+        id: 'ai-title-generator',
+        name: 'AI Title Generator',
+        description: 'Create catchy titles for blogs, videos & more',
+        icon: 'Lightbulb',
+        category: 'ai',
+        component: 'AITitleGenerator',
+        tags: ['ai', 'title', 'headline', 'blog', 'youtube', 'seo'],
+        implemented: true
+    },
+    {
+        id: 'ai-story-generator',
+        name: 'AI Story Generator',
+        description: 'Create unique story starters for any genre',
+        icon: 'BookOpen',
+        category: 'ai',
+        component: 'AIStoryGenerator',
+        tags: ['ai', 'story', 'creative', 'writing', 'fiction'],
         implemented: true
     }
 ];
