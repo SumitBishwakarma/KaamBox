@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Lightbulb, Copy, Check, RefreshCw, Sparkles } from 'lucide-react';
+import { generateWithGemini } from '../../utils/geminiAPI';
 
 const AITitleGenerator = () => {
     const [topic, setTopic] = useState('');
@@ -9,6 +10,7 @@ const AITitleGenerator = () => {
     const [titles, setTitles] = useState([]);
     const [copied, setCopied] = useState(null);
     const [generating, setGenerating] = useState(false);
+    const [error, setError] = useState('');
 
     const types = [
         { id: 'blog', name: 'Blog Post', icon: '📝' },
@@ -26,99 +28,37 @@ const AITitleGenerator = () => {
         { id: 'listicle', name: 'Listicle' }
     ];
 
-    const patterns = {
-        engaging: [
-            "The Ultimate Guide to [TOPIC]",
-            "[TOPIC]: Everything You Need to Know",
-            "Why [TOPIC] Is Changing Everything",
-            "Master [TOPIC] in Just 30 Days",
-            "How [TOPIC] Can Transform Your Life",
-            "The Secret to [TOPIC] Nobody Talks About",
-            "[TOPIC] Made Simple: A Complete Guide",
-            "Discover the Power of [TOPIC]"
-        ],
-        professional: [
-            "[TOPIC]: A Comprehensive Analysis",
-            "Understanding [TOPIC]: Key Insights and Strategies",
-            "[TOPIC]: Best Practices for Success",
-            "The Complete [TOPIC] Framework",
-            "[TOPIC] Explained: A Professional's Guide",
-            "Strategic Approaches to [TOPIC]",
-            "[TOPIC]: Industry Standards and Guidelines",
-            "Implementing [TOPIC] Effectively"
-        ],
-        clickbait: [
-            "You Won't Believe What [TOPIC] Can Do! 🤯",
-            "[TOPIC]: The Secret They Don't Want You to Know",
-            "This [TOPIC] Trick Changed My Life!",
-            "Stop Doing [TOPIC] Wrong! Here's the Right Way",
-            "I Tried [TOPIC] for 30 Days - The Results Were INSANE",
-            "[TOPIC] Exposed: The Truth Finally Revealed",
-            "Warning: This [TOPIC] Method Is Too Powerful",
-            "The [TOPIC] Hack Everyone Is Talking About"
-        ],
-        seo: [
-            "[TOPIC]: Complete Guide [Current Year]",
-            "Best [TOPIC] Tips and Strategies",
-            "How to [TOPIC]: Step-by-Step Tutorial",
-            "[TOPIC] for Beginners: Ultimate Guide",
-            "Top [TOPIC] Methods That Actually Work",
-            "[TOPIC] Explained: What, Why, and How",
-            "Learn [TOPIC] Fast: Expert Tips",
-            "[TOPIC] vs Alternatives: Which Is Best?"
-        ],
-        listicle: [
-            "10 Amazing [TOPIC] Tips You Need to Know",
-            "7 Secrets to Mastering [TOPIC]",
-            "15 [TOPIC] Ideas That Will Inspire You",
-            "5 Common [TOPIC] Mistakes to Avoid",
-            "12 Ways to Improve Your [TOPIC]",
-            "8 [TOPIC] Trends to Watch",
-            "20 Essential [TOPIC] Tools",
-            "6 [TOPIC] Strategies for Success"
-        ]
-    };
-
-    const typeModifiers = {
-        blog: ['How to', 'Why', 'The Complete Guide to', 'Understanding'],
-        youtube: ['Watch:', 'Tutorial:', 'Review:', 'LIVE:'],
-        product: ['Introducing', 'New', 'Premium', 'The Best'],
-        headline: ['Breaking:', 'Exclusive:', 'Report:', 'Analysis:'],
-        course: ['Learn', 'Master', 'Complete Course:', 'Bootcamp:']
-    };
-
-    const generateTitles = () => {
+    const generateTitles = async () => {
         if (!topic.trim()) return;
 
         setGenerating(true);
+        setError('');
 
-        setTimeout(() => {
-            const currentYear = new Date().getFullYear();
-            const selectedPatterns = patterns[style];
-            const modifiers = typeModifiers[type];
+        const prompt = `Generate 8 ${style} titles for a ${type} about "${topic}".
 
-            // Generate 8 unique titles
-            const generatedTitles = selectedPatterns.map((pattern, i) => {
-                let title = pattern
-                    .replace(/\[TOPIC\]/g, topic.trim())
-                    .replace('[Current Year]', currentYear.toString());
+Style guide:
+- engaging: Make it compelling and curiosity-driving
+- professional: Corporate and business-appropriate
+- clickbait: Attention-grabbing, use power words (Warning: You Won't Believe...)
+- seo: Include keywords, optimized for search (include year ${new Date().getFullYear()})
+- listicle: Number-based lists (10 Ways..., 7 Secrets...)
 
-                // Add type modifier for some titles
-                if (i % 3 === 0 && modifiers.length > 0) {
-                    const modifier = modifiers[i % modifiers.length];
-                    if (!title.includes(modifier)) {
-                        title = `${modifier} ${title}`;
-                    }
-                }
+Format: Return each title on a new line, numbered 1-8. Only provide the titles, nothing else.`;
 
-                return title;
-            });
+        const result = await generateWithGemini(prompt, { temperature: 0.8 });
 
-            // Shuffle and take top results
-            const shuffled = generatedTitles.sort(() => Math.random() - 0.5);
-            setTitles(shuffled);
-            setGenerating(false);
-        }, 500);
+        if (result.success) {
+            // Parse titles from response
+            const generatedTitles = result.text
+                .split('\n')
+                .map(line => line.replace(/^\d+[\.\)]\s*/, '').trim())
+                .filter(line => line.length > 5);
+            setTitles(generatedTitles.slice(0, 8));
+        } else {
+            setError(result.error || 'Failed to generate titles. Please try again.');
+        }
+
+        setGenerating(false);
     };
 
     const copyTitle = async (title, index) => {
@@ -127,15 +67,11 @@ const AITitleGenerator = () => {
         setTimeout(() => setCopied(null), 2000);
     };
 
-    const regenerate = () => {
-        generateTitles();
-    };
-
     return (
         <div className="space-y-6">
             <div className="text-center mb-6">
                 <h2 className="text-lg font-semibold mb-2">AI Title Generator</h2>
-                <p className="text-[var(--text-muted)] text-sm">Generate catchy titles for any content</p>
+                <p className="text-[var(--text-muted)] text-sm">Generate catchy titles with AI</p>
             </div>
 
             <div className="space-y-4">
@@ -201,15 +137,22 @@ const AITitleGenerator = () => {
                     {generating ? (
                         <>
                             <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
-                            Generating...
+                            AI Generating...
                         </>
                     ) : (
                         <>
                             <Lightbulb className="w-4 h-4 mr-2" />
-                            Generate Titles
+                            Generate Titles with AI
                         </>
                     )}
                 </motion.button>
+
+                {/* Error */}
+                {error && (
+                    <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-xl text-red-500 text-sm">
+                        {error}
+                    </div>
+                )}
 
                 {/* Generated Titles */}
                 {titles.length > 0 && (
@@ -221,12 +164,12 @@ const AITitleGenerator = () => {
                         <div className="flex items-center justify-between">
                             <label className="text-sm font-medium flex items-center gap-2">
                                 <Sparkles className="w-4 h-4 text-pink-500" />
-                                Generated Titles ({titles.length})
+                                AI Generated Titles ({titles.length})
                             </label>
                             <motion.button
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
-                                onClick={regenerate}
+                                onClick={generateTitles}
                                 className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[var(--bg-tertiary)] text-sm"
                             >
                                 <RefreshCw className="w-4 h-4" />
@@ -259,6 +202,9 @@ const AITitleGenerator = () => {
                                 </motion.div>
                             ))}
                         </div>
+                        <p className="text-xs text-[var(--text-muted)]">
+                            Powered by Gemini AI
+                        </p>
                     </motion.div>
                 )}
             </div>

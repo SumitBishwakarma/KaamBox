@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { RefreshCw, Copy, Check, Sparkles, ArrowRightLeft } from 'lucide-react';
+import { generateWithGemini } from '../../utils/geminiAPI';
 
 const AIParaphraser = () => {
     const [inputText, setInputText] = useState('');
@@ -8,6 +9,7 @@ const AIParaphraser = () => {
     const [mode, setMode] = useState('standard');
     const [copied, setCopied] = useState(false);
     const [processing, setProcessing] = useState(false);
+    const [error, setError] = useState('');
 
     const modes = [
         { id: 'standard', name: 'Standard', desc: 'Clear and natural' },
@@ -17,119 +19,35 @@ const AIParaphraser = () => {
         { id: 'simple', name: 'Simplify', desc: 'Easy to understand' }
     ];
 
-    // Synonym mappings for paraphrasing
-    const synonyms = {
-        'good': ['excellent', 'great', 'wonderful', 'fantastic', 'superb'],
-        'bad': ['poor', 'terrible', 'awful', 'dreadful', 'unpleasant'],
-        'big': ['large', 'huge', 'enormous', 'massive', 'substantial'],
-        'small': ['tiny', 'little', 'compact', 'miniature', 'modest'],
-        'important': ['crucial', 'vital', 'essential', 'significant', 'key'],
-        'help': ['assist', 'aid', 'support', 'facilitate', 'enable'],
-        'use': ['utilize', 'employ', 'apply', 'leverage', 'implement'],
-        'make': ['create', 'produce', 'develop', 'generate', 'construct'],
-        'get': ['obtain', 'acquire', 'receive', 'gain', 'secure'],
-        'show': ['demonstrate', 'display', 'illustrate', 'reveal', 'present'],
-        'think': ['believe', 'consider', 'contemplate', 'ponder', 'reflect'],
-        'know': ['understand', 'comprehend', 'recognize', 'realize', 'grasp'],
-        'want': ['desire', 'wish', 'seek', 'hope', 'aspire'],
-        'need': ['require', 'demand', 'necessitate', 'must have', 'depend on'],
-        'like': ['enjoy', 'appreciate', 'prefer', 'favor', 'admire'],
-        'very': ['extremely', 'highly', 'remarkably', 'exceptionally', 'incredibly'],
-        'also': ['additionally', 'furthermore', 'moreover', 'likewise', 'too'],
-        'but': ['however', 'nevertheless', 'yet', 'although', 'though'],
-        'because': ['since', 'as', 'due to', 'owing to', 'given that'],
-        'so': ['therefore', 'thus', 'hence', 'consequently', 'accordingly']
+    const modePrompts = {
+        standard: 'Paraphrase the following text in a clear and natural way, maintaining the original meaning:',
+        formal: 'Rewrite the following text in a formal, professional tone suitable for business communication:',
+        casual: 'Rewrite the following text in a casual, friendly, conversational tone:',
+        creative: 'Creatively rewrite the following text with unique expressions and engaging language:',
+        simple: 'Simplify the following text to make it easy to understand for anyone:'
     };
 
-    const formalPrefixes = {
-        'I think': 'It is my considered opinion that',
-        'You should': 'It is recommended that one',
-        'We need to': 'It is essential that we',
-        'This is': 'This may be characterized as',
-        'It\'s': 'It is',
-        'Don\'t': 'Do not',
-        'Can\'t': 'Cannot',
-        'Won\'t': 'Will not'
-    };
-
-    const casualReplacements = {
-        'utilize': 'use',
-        'implement': 'do',
-        'facilitate': 'help',
-        'demonstrate': 'show',
-        'therefore': 'so',
-        'however': 'but',
-        'additionally': 'also',
-        'It is': "It's",
-        'do not': "don't",
-        'cannot': "can't"
-    };
-
-    const paraphrase = () => {
+    const paraphrase = async () => {
         if (!inputText.trim()) return;
 
         setProcessing(true);
+        setError('');
 
-        setTimeout(() => {
-            let result = inputText;
+        const prompt = `${modePrompts[mode]}
 
-            if (mode === 'standard' || mode === 'creative') {
-                // Replace words with synonyms
-                Object.keys(synonyms).forEach(word => {
-                    const regex = new RegExp(`\\b${word}\\b`, 'gi');
-                    const replacement = synonyms[word][Math.floor(Math.random() * synonyms[word].length)];
-                    result = result.replace(regex, replacement);
-                });
-            }
+"${inputText}"
 
-            if (mode === 'formal') {
-                // Apply formal transformations
-                Object.keys(formalPrefixes).forEach(phrase => {
-                    result = result.replace(new RegExp(phrase, 'gi'), formalPrefixes[phrase]);
-                });
-                // Replace words with formal synonyms
-                Object.keys(synonyms).forEach(word => {
-                    const formalSynonyms = synonyms[word].filter(s => s.length > 5);
-                    if (formalSynonyms.length > 0) {
-                        const regex = new RegExp(`\\b${word}\\b`, 'gi');
-                        result = result.replace(regex, formalSynonyms[0]);
-                    }
-                });
-            }
+Only provide the paraphrased text, nothing else.`;
 
-            if (mode === 'casual') {
-                // Apply casual transformations
-                Object.keys(casualReplacements).forEach(phrase => {
-                    result = result.replace(new RegExp(phrase, 'gi'), casualReplacements[phrase]);
-                });
-            }
+        const result = await generateWithGemini(prompt, { temperature: 0.7 });
 
-            if (mode === 'simple') {
-                // Simplify by using shorter words
-                Object.keys(casualReplacements).forEach(phrase => {
-                    result = result.replace(new RegExp(phrase, 'gi'), casualReplacements[phrase]);
-                });
-                // Break long sentences
-                result = result.replace(/([.!?])\s+/g, '$1\n');
-            }
+        if (result.success) {
+            setOutputText(result.text.trim());
+        } else {
+            setError(result.error || 'Failed to paraphrase. Please try again.');
+        }
 
-            if (mode === 'creative') {
-                // Add some creative restructuring
-                const sentences = result.split(/(?<=[.!?])\s+/);
-                if (sentences.length > 1) {
-                    // Occasionally reorder sentences
-                    result = sentences.map((s, i) => {
-                        if (i > 0 && Math.random() > 0.7) {
-                            return `${s.charAt(0).toUpperCase()}${s.slice(1)}`;
-                        }
-                        return s;
-                    }).join(' ');
-                }
-            }
-
-            setOutputText(result);
-            setProcessing(false);
-        }, 800);
+        setProcessing(false);
     };
 
     const copyToClipboard = async () => {
@@ -147,7 +65,7 @@ const AIParaphraser = () => {
         <div className="space-y-6">
             <div className="text-center mb-6">
                 <h2 className="text-lg font-semibold mb-2">AI Paraphraser</h2>
-                <p className="text-[var(--text-muted)] text-sm">Rewrite text in different styles</p>
+                <p className="text-[var(--text-muted)] text-sm">Rewrite text in different styles using AI</p>
             </div>
 
             <div className="space-y-4">
@@ -197,12 +115,12 @@ const AIParaphraser = () => {
                         {processing ? (
                             <>
                                 <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
-                                Processing...
+                                AI Processing...
                             </>
                         ) : (
                             <>
                                 <Sparkles className="w-4 h-4 mr-2" />
-                                Paraphrase
+                                Paraphrase with AI
                             </>
                         )}
                     </motion.button>
@@ -219,16 +137,23 @@ const AIParaphraser = () => {
                     )}
                 </div>
 
+                {/* Error */}
+                {error && (
+                    <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-xl text-red-500 text-sm">
+                        {error}
+                    </div>
+                )}
+
                 {/* Output */}
                 {outputText && (
                     <motion.div
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                     >
-                        <div className you="flex items-center justify-between mb-2">
+                        <div className="flex items-center justify-between mb-2">
                             <label className="text-sm font-medium flex items-center gap-2">
                                 <Sparkles className="w-4 h-4 text-pink-500" />
-                                Paraphrased Text
+                                AI Paraphrased Text
                             </label>
                             <motion.button
                                 whileHover={{ scale: 1.05 }}
@@ -253,7 +178,7 @@ const AIParaphraser = () => {
                             <p className="whitespace-pre-wrap leading-relaxed">{outputText}</p>
                         </div>
                         <p className="text-xs text-[var(--text-muted)] mt-1">
-                            {outputText.split(/\s+/).filter(w => w).length} words
+                            {outputText.split(/\s+/).filter(w => w).length} words • Powered by Gemini AI
                         </p>
                     </motion.div>
                 )}

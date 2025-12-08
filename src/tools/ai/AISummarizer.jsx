@@ -1,15 +1,16 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { FileText, Copy, Check, Sparkles, RefreshCw, List, AlignLeft } from 'lucide-react';
+import { generateWithGemini } from '../../utils/geminiAPI';
 
 const AISummarizer = () => {
     const [inputText, setInputText] = useState('');
     const [summary, setSummary] = useState('');
-    const [keyPoints, setKeyPoints] = useState([]);
     const [mode, setMode] = useState('paragraph');
     const [length, setLength] = useState('medium');
     const [copied, setCopied] = useState(false);
     const [processing, setProcessing] = useState(false);
+    const [error, setError] = useState('');
 
     const modes = [
         { id: 'paragraph', name: 'Paragraph', icon: <AlignLeft size={18} /> },
@@ -17,107 +18,64 @@ const AISummarizer = () => {
     ];
 
     const lengths = [
-        { id: 'short', name: 'Short', percent: 15 },
-        { id: 'medium', name: 'Medium', percent: 30 },
-        { id: 'long', name: 'Detailed', percent: 50 }
+        { id: 'short', name: 'Short', desc: '~2-3 sentences' },
+        { id: 'medium', name: 'Medium', desc: '~5-7 sentences' },
+        { id: 'long', name: 'Detailed', desc: 'Comprehensive' }
     ];
 
-    const summarize = () => {
+    const summarize = async () => {
         if (!inputText.trim()) return;
 
         setProcessing(true);
+        setError('');
 
-        setTimeout(() => {
-            // Split into sentences
-            const sentences = inputText
-                .split(/(?<=[.!?])\s+/)
-                .filter(s => s.trim().length > 10);
+        const lengthGuide = {
+            short: 'very brief (2-3 sentences)',
+            medium: 'moderate length (5-7 sentences)',
+            long: 'comprehensive and detailed'
+        };
 
-            if (sentences.length === 0) {
-                setSummary(inputText);
-                setKeyPoints([inputText]);
-                setProcessing(false);
-                return;
-            }
+        const formatGuide = mode === 'paragraph'
+            ? 'as a flowing paragraph'
+            : 'as bullet points (use - for each point)';
 
-            // Score sentences based on importance
-            const scoredSentences = sentences.map((sentence, index) => {
-                let score = 0;
+        const prompt = `Summarize the following text ${formatGuide}. Make it ${lengthGuide[length]}.
 
-                // First and last sentences are usually important
-                if (index === 0) score += 3;
-                if (index === sentences.length - 1) score += 2;
+Text to summarize:
+"""
+${inputText}
+"""
 
-                // Sentences with keywords score higher
-                const keywords = ['important', 'key', 'main', 'significant', 'essential',
-                    'crucial', 'therefore', 'however', 'conclusion', 'result', 'finally',
-                    'in summary', 'overall', 'notably', 'specifically', 'because'];
-                keywords.forEach(kw => {
-                    if (sentence.toLowerCase().includes(kw)) score += 2;
-                });
+Provide only the summary, nothing else.`;
 
-                // Longer sentences might have more content
-                const wordCount = sentence.split(/\s+/).length;
-                if (wordCount > 10 && wordCount < 40) score += 1;
+        const result = await generateWithGemini(prompt, {
+            temperature: 0.5,
+            maxTokens: length === 'long' ? 1024 : length === 'medium' ? 512 : 256
+        });
 
-                // Sentences with numbers might have facts
-                if (/\d+/.test(sentence)) score += 1;
+        if (result.success) {
+            setSummary(result.text.trim());
+        } else {
+            setError(result.error || 'Failed to summarize. Please try again.');
+        }
 
-                return { sentence, score, index };
-            });
-
-            // Sort by score
-            scoredSentences.sort((a, b) => b.score - a.score);
-
-            // Calculate how many sentences to include based on length
-            const lengthPercent = lengths.find(l => l.id === length)?.percent || 30;
-            const numSentences = Math.max(1, Math.ceil(sentences.length * (lengthPercent / 100)));
-
-            // Get top sentences
-            const topSentences = scoredSentences
-                .slice(0, numSentences)
-                .sort((a, b) => a.index - b.index) // Restore original order
-                .map(s => s.sentence);
-
-            if (mode === 'paragraph') {
-                setSummary(topSentences.join(' '));
-                setKeyPoints([]);
-            } else {
-                // Extract key points
-                const points = topSentences.map(s => {
-                    // Clean up the sentence for bullet points
-                    let point = s.trim();
-                    // Remove trailing period for cleaner bullets
-                    point = point.replace(/[.!?]$/, '');
-                    return point;
-                });
-                setKeyPoints(points);
-                setSummary('');
-            }
-
-            setProcessing(false);
-        }, 800);
+        setProcessing(false);
     };
 
     const copyToClipboard = async () => {
-        const textToCopy = mode === 'paragraph'
-            ? summary
-            : keyPoints.map((p, i) => `${i + 1}. ${p}`).join('\n');
-        await navigator.clipboard.writeText(textToCopy);
+        await navigator.clipboard.writeText(summary);
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
     };
 
     const inputWordCount = inputText.split(/\s+/).filter(w => w).length;
-    const outputWordCount = mode === 'paragraph'
-        ? summary.split(/\s+/).filter(w => w).length
-        : keyPoints.join(' ').split(/\s+/).filter(w => w).length;
+    const outputWordCount = summary.split(/\s+/).filter(w => w).length;
 
     return (
         <div className="space-y-6">
             <div className="text-center mb-6">
                 <h2 className="text-lg font-semibold mb-2">AI Text Summarizer</h2>
-                <p className="text-[var(--text-muted)] text-sm">Summarize long texts into key insights</p>
+                <p className="text-[var(--text-muted)] text-sm">Summarize long texts using AI</p>
             </div>
 
             <div className="space-y-4">
@@ -154,7 +112,7 @@ const AISummarizer = () => {
                                         }`}
                                 >
                                     <p className="text-sm font-medium">{l.name}</p>
-                                    <p className="text-xs opacity-70">~{l.percent}%</p>
+                                    <p className="text-xs opacity-70">{l.desc}</p>
                                 </button>
                             ))}
                         </div>
@@ -171,7 +129,7 @@ const AISummarizer = () => {
                         className="input w-full h-48 resize-none"
                     />
                     <p className="text-xs text-[var(--text-muted)] mt-1">
-                        {inputWordCount} words • {inputText.split(/(?<=[.!?])\s+/).filter(s => s.trim()).length} sentences
+                        {inputWordCount} words
                     </p>
                 </div>
 
@@ -186,18 +144,25 @@ const AISummarizer = () => {
                     {processing ? (
                         <>
                             <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
-                            Analyzing...
+                            AI Analyzing...
                         </>
                     ) : (
                         <>
                             <Sparkles className="w-4 h-4 mr-2" />
-                            Summarize Text
+                            Summarize with AI
                         </>
                     )}
                 </motion.button>
 
+                {/* Error */}
+                {error && (
+                    <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-xl text-red-500 text-sm">
+                        {error}
+                    </div>
+                )}
+
                 {/* Output */}
-                {(summary || keyPoints.length > 0) && (
+                {summary && (
                     <motion.div
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -205,7 +170,7 @@ const AISummarizer = () => {
                         <div className="flex items-center justify-between mb-2">
                             <label className="text-sm font-medium flex items-center gap-2">
                                 <FileText className="w-4 h-4 text-pink-500" />
-                                Summary
+                                AI Summary
                                 <span className="text-xs text-[var(--text-muted)]">
                                     ({outputWordCount} words - {Math.round((outputWordCount / inputWordCount) * 100)}% of original)
                                 </span>
@@ -230,19 +195,11 @@ const AISummarizer = () => {
                             </motion.button>
                         </div>
                         <div className="p-4 bg-[var(--bg-tertiary)] rounded-xl border border-pink-500/20">
-                            {mode === 'paragraph' ? (
-                                <p className="leading-relaxed">{summary}</p>
-                            ) : (
-                                <ul className="space-y-2">
-                                    {keyPoints.map((point, index) => (
-                                        <li key={index} className="flex gap-2">
-                                            <span className="text-pink-500 font-bold">{index + 1}.</span>
-                                            <span>{point}</span>
-                                        </li>
-                                    ))}
-                                </ul>
-                            )}
+                            <p className="whitespace-pre-wrap leading-relaxed">{summary}</p>
                         </div>
+                        <p className="text-xs text-[var(--text-muted)] mt-1">
+                            Powered by Gemini AI
+                        </p>
                     </motion.div>
                 )}
             </div>
