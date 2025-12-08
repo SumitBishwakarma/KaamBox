@@ -3,13 +3,13 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     Menu, X, Search, Sun, Moon, Shield, ChevronLeft, ChevronRight,
-    FileText, Image, Code, Calculator, Wrench, Home, Brain
+    FileText, Image, Code, Calculator, Wrench, Home
 } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
 import { categories } from '../../data/tools';
 
 const iconMap = {
-    FileText, Image, Code, Calculator, Wrench, Brain
+    FileText, Image, Code, Calculator, Wrench
 };
 
 const Sidebar = ({ isOpen, setIsOpen }) => {
@@ -37,12 +37,12 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
             {/* Sidebar */}
             <aside
                 className={`
-                    fixed top-0 left-0 h-full z-50
-                    bg-[var(--bg-secondary)] border-r border-[var(--border-color)]
-                    transition-all duration-300 ease-in-out
-                    ${sidebarWidth}
-                    ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
-                `}
+          fixed top-0 left-0 h-full z-50
+          bg-[var(--bg-secondary)] border-r border-[var(--border-color)]
+          transition-all duration-300 ease-in-out
+          ${sidebarWidth}
+          ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+        `}
             >
                 {/* Logo */}
                 <div className="h-16 flex items-center justify-between px-4 border-b border-[var(--border-color)]">
@@ -84,11 +84,11 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
                         to="/"
                         onClick={() => setIsOpen(false)}
                         className={({ isActive }) => `
-                            flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all
-                            ${isActive
+              flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all
+              ${isActive
                                 ? 'bg-blue-500/10 text-blue-500 border border-blue-500/30'
                                 : 'hover:bg-[var(--bg-tertiary)] text-[var(--text-secondary)]'}
-                        `}
+            `}
                     >
                         <Home size={20} />
                         {!isCollapsed && <span className="font-medium">Home</span>}
@@ -106,33 +106,20 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
 
                     {categories.map((category) => {
                         const Icon = iconMap[category.icon] || FileText;
-                        const isAI = category.id === 'ai';
-
                         return (
                             <NavLink
                                 key={category.id}
                                 to={`/?category=${category.id}`}
                                 onClick={() => setIsOpen(false)}
                                 className={({ isActive }) => `
-                                    flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all
-                                    ${isActive
-                                        ? isAI
-                                            ? 'bg-pink-500/10 text-pink-500 border border-pink-500/30'
-                                            : 'bg-[var(--bg-tertiary)] text-[var(--text-primary)]'
+                  flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all
+                  ${isActive
+                                        ? 'bg-[var(--bg-tertiary)] text-[var(--text-primary)]'
                                         : 'hover:bg-[var(--bg-tertiary)] text-[var(--text-secondary)]'}
-                                `}
+                `}
                             >
                                 <Icon size={20} style={{ color: category.color }} />
-                                {!isCollapsed && (
-                                    <span className="font-medium flex items-center gap-2">
-                                        {category.name}
-                                        {isAI && (
-                                            <span className="text-[10px] font-bold px-1.5 py-0.5 bg-pink-500 text-white rounded-full">
-                                                NEW
-                                            </span>
-                                        )}
-                                    </span>
-                                )}
+                                {!isCollapsed && <span className="font-medium">{category.name}</span>}
                             </NavLink>
                         );
                     })}

@@ -15,8 +15,6 @@ const ToolCard = ({ tool, index = 0 }) => {
         }
     };
 
-    const isAI = tool.category === 'ai';
-
     return (
         <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -24,9 +22,9 @@ const ToolCard = ({ tool, index = 0 }) => {
             transition={{ delay: index * 0.05, duration: 0.3 }}
             onClick={handleClick}
             className={`
-                tool-card group relative
-                ${!tool.implemented ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer'}
-            `}
+        tool-card group relative
+        ${!tool.implemented ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer'}
+      `}
         >
             {/* Category Color Accent */}
             <div
@@ -64,16 +62,6 @@ const ToolCard = ({ tool, index = 0 }) => {
                     </span>
                 ))}
             </div>
-
-            {/* AI Badge */}
-            {isAI && tool.implemented && (
-                <div className="absolute top-3 right-3">
-                    <span className="inline-flex items-center gap-1 text-xs font-bold px-2 py-1 rounded-full bg-pink-500/10 text-pink-500 border border-pink-500/30">
-                        <LucideIcons.Sparkles size={12} />
-                        AI
-                    </span>
-                </div>
-            )}
 
             {/* Coming Soon Badge */}
             {!tool.implemented && (

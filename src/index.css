@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 /* ============================================
-   KAAMBOX - Premium Design System v2.0
+   KAAMBOX - Premium Design System
    ============================================ */
 
 /* CSS Custom Properties - Theme Colors */
@@ -10,46 +10,35 @@
   --color-primary: #3b82f6;
   --color-primary-light: #60a5fa;
   --color-primary-dark: #2563eb;
-
+  
   /* Accent Colors */
   --color-accent: #8b5cf6;
   --color-accent-light: #a78bfa;
-  --color-accent-pink: #ec4899;
-
-  /* Success/Error Colors */
-  --color-success: #22c55e;
-  --color-error: #ef4444;
-  --color-warning: #f59e0b;
-
+  
   /* Background Colors - Light Mode */
   --bg-primary: #ffffff;
   --bg-secondary: #f8fafc;
   --bg-tertiary: #f1f5f9;
   --bg-card: #ffffff;
-
+  
   /* Text Colors - Light Mode */
   --text-primary: #0f172a;
   --text-secondary: #475569;
   --text-muted: #94a3b8;
-
+  
   /* Border Colors */
   --border-color: #e2e8f0;
   --border-hover: #cbd5e1;
-
+  
   /* Glass Effect */
-  --glass-bg: rgba(255, 255, 255, 0.8);
+  --glass-bg: rgba(255, 255, 255, 0.7);
   --glass-border: rgba(255, 255, 255, 0.3);
-
+  
   /* Shadows */
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
   --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
   --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
-  --shadow-glow: 0 0 30px rgba(59, 130, 246, 0.3);
-
-  /* Gradients */
-  --gradient-primary: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
-  --gradient-accent: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
+  --shadow-glow: 0 0 20px rgba(59, 130, 246, 0.3);
 }
 
 /* Dark Mode Theme */
@@ -58,25 +47,23 @@
   --bg-secondary: #1e293b;
   --bg-tertiary: #334155;
   --bg-card: #1e293b;
-
+  
   --text-primary: #f8fafc;
   --text-secondary: #cbd5e1;
   --text-muted: #64748b;
-
+  
   --border-color: #334155;
   --border-hover: #475569;
-
-  --glass-bg: rgba(30, 41, 59, 0.9);
+  
+  --glass-bg: rgba(30, 41, 59, 0.8);
   --glass-border: rgba(71, 85, 105, 0.3);
-
-  --shadow-glow: 0 0 40px rgba(59, 130, 246, 0.3);
+  
+  --shadow-glow: 0 0 30px rgba(59, 130, 246, 0.4);
 }
 
 /* Base Styles */
 * {
   box-sizing: border-box;
-  margin: 0;
-  padding: 0;
 }
 
 html {
@@ -91,7 +78,6 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   transition: background-color 0.3s ease, color 0.3s ease;
-  min-height: 100vh;
 }
 
 /* Scrollbar Styling */
@@ -114,9 +100,10 @@ body {
 }
 
 /* ============================================
-   Glassmorphism
+   Utility Classes
    ============================================ */
 
+/* Glassmorphism */
 .glass {
   background: var(--glass-bg);
   backdrop-filter: blur(12px);
@@ -133,10 +120,7 @@ body {
   box-shadow: var(--shadow-lg);
 }
 
-/* ============================================
-   Gradient Backgrounds
-   ============================================ */
-
+/* Gradient Backgrounds */
 .bg-gradient-premium {
   background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 50%, var(--bg-tertiary) 100%);
 }
@@ -145,28 +129,15 @@ body {
   background: radial-gradient(ellipse at top, var(--bg-secondary) 0%, var(--bg-primary) 100%);
 }
 
-/* ============================================
-   Text Gradients
-   ============================================ */
-
+/* Text Gradients */
 .text-gradient {
-  background: var(--gradient-primary);
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
-.text-gradient-accent {
-  background: var(--gradient-accent);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-/* ============================================
-   Hover Effects
-   ============================================ */
-
+/* Hover Effects */
 .hover-glow {
   transition: all 0.3s ease;
 }
@@ -184,10 +155,7 @@ body {
   transform: scale(1.02);
 }
 
-/* ============================================
-   Card Styles
-   ============================================ */
-
+/* Card Styles */
 .tool-card {
   background: var(--bg-card);
   border: 1px solid var(--border-color);
@@ -203,7 +171,7 @@ body {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(139, 92, 246, 0.05) 100%);
+  background: linear-gradient(135deg, transparent 0%, rgba(59, 130, 246, 0.05) 100%);
   opacity: 0;
   transition: opacity 0.3s ease;
 }
@@ -218,12 +186,9 @@ body {
   opacity: 1;
 }
 
-/* ============================================
-   Button Styles
-   ============================================ */
-
+/* Button Styles */
 .btn-primary {
-  background: var(--gradient-primary);
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
   color: white;
   padding: 0.75rem 1.5rem;
   border-radius: 12px;
@@ -258,31 +223,7 @@ body {
   background: var(--bg-secondary);
 }
 
-/* ============================================
-   Input Styles
-   ============================================ */
-
-.input {
-  width: 100%;
-  padding: 0.875rem 1rem;
-  background: var(--bg-secondary);
-  border: 2px solid var(--border-color);
-  border-radius: 12px;
-  color: var(--text-primary);
-  font-size: 1rem;
-  transition: all 0.3s ease;
-  outline: none;
-}
-
-.input:focus {
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-}
-
-.input::placeholder {
-  color: var(--text-muted);
-}
-
+/* Input Styles */
 .input-field {
   width: 100%;
   padding: 0.875rem 1rem;
@@ -325,10 +266,7 @@ body {
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
-/* ============================================
-   Badge Styles
-   ============================================ */
-
+/* Badge Styles */
 .badge {
   display: inline-flex;
   align-items: center;
@@ -346,81 +284,56 @@ body {
   color: var(--color-primary);
 }
 
-.badge-ai {
-  background: linear-gradient(135deg, rgba(236, 72, 153, 0.15) 0%, rgba(168, 85, 247, 0.15) 100%);
-  color: #ec4899;
-}
-
 /* ============================================
    Animations
    ============================================ */
 
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 @keyframes slideUp {
-  from {
+  from { 
     opacity: 0;
     transform: translateY(20px);
   }
-
-  to {
+  to { 
     opacity: 1;
     transform: translateY(0);
   }
 }
 
 @keyframes slideDown {
-  from {
+  from { 
     opacity: 0;
     transform: translateY(-20px);
   }
-
-  to {
+  to { 
     opacity: 1;
     transform: translateY(0);
   }
 }
 
 @keyframes scaleIn {
-  from {
+  from { 
     opacity: 0;
     transform: scale(0.95);
   }
-
-  to {
+  to { 
     opacity: 1;
     transform: scale(1);
   }
 }
 
 @keyframes pulse {
-
-  0%,
-  100% {
-    opacity: 1;
-  }
-
-  50% {
-    opacity: 0.5;
-  }
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
 }
 
 @keyframes shimmer {
-  0% {
-    background-position: -200% 0;
-  }
-
-  100% {
-    background-position: 200% 0;
-  }
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
 }
 
 .animate-fade-in {
@@ -445,37 +358,14 @@ body {
   animation: slideUp 0.4s ease forwards;
 }
 
-.stagger-item:nth-child(1) {
-  animation-delay: 0.05s;
-}
-
-.stagger-item:nth-child(2) {
-  animation-delay: 0.1s;
-}
-
-.stagger-item:nth-child(3) {
-  animation-delay: 0.15s;
-}
-
-.stagger-item:nth-child(4) {
-  animation-delay: 0.2s;
-}
-
-.stagger-item:nth-child(5) {
-  animation-delay: 0.25s;
-}
-
-.stagger-item:nth-child(6) {
-  animation-delay: 0.3s;
-}
-
-.stagger-item:nth-child(7) {
-  animation-delay: 0.35s;
-}
-
-.stagger-item:nth-child(8) {
-  animation-delay: 0.4s;
-}
+.stagger-item:nth-child(1) { animation-delay: 0.05s; }
+.stagger-item:nth-child(2) { animation-delay: 0.1s; }
+.stagger-item:nth-child(3) { animation-delay: 0.15s; }
+.stagger-item:nth-child(4) { animation-delay: 0.2s; }
+.stagger-item:nth-child(5) { animation-delay: 0.25s; }
+.stagger-item:nth-child(6) { animation-delay: 0.3s; }
+.stagger-item:nth-child(7) { animation-delay: 0.35s; }
+.stagger-item:nth-child(8) { animation-delay: 0.4s; }
 
 /* ============================================
    Ad Container Styles
@@ -500,14 +390,31 @@ body {
 }
 
 /* ============================================
+   Responsive Utilities
+   ============================================ */
+
+@media (max-width: 768px) {
+  .tool-card {
+    padding: 1rem;
+  }
+  
+  .btn-primary, .btn-secondary {
+    padding: 0.625rem 1rem;
+    font-size: 0.875rem;
+  }
+}
+
+/* ============================================
    Loading States
    ============================================ */
 
 .skeleton {
-  background: linear-gradient(90deg,
-      var(--bg-tertiary) 25%,
-      var(--bg-secondary) 50%,
-      var(--bg-tertiary) 75%);
+  background: linear-gradient(
+    90deg,
+    var(--bg-tertiary) 25%,
+    var(--bg-secondary) 50%,
+    var(--bg-tertiary) 75%
+  );
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
   border-radius: 8px;
@@ -525,78 +432,4 @@ body {
   color: #22c55e;
   font-size: 0.75rem;
   font-weight: 600;
-}
-
-/* ============================================
-   Responsive Utilities
-   ============================================ */
-
-@media (max-width: 640px) {
-  .tool-card {
-    padding: 1rem;
-  }
-
-  .btn-primary,
-  .btn-secondary {
-    padding: 0.625rem 1rem;
-    font-size: 0.875rem;
-  }
-
-  .input,
-  .input-field {
-    padding: 0.75rem;
-    font-size: 0.9375rem;
-  }
-}
-
-@media (max-width: 480px) {
-  h1 {
-    font-size: 1.75rem !important;
-  }
-
-  h2 {
-    font-size: 1.25rem !important;
-  }
-}
-
-/* Mobile touch targets */
-@media (max-width: 768px) {
-
-  button,
-  .btn-primary,
-  .btn-secondary,
-  a {
-    min-height: 44px;
-  }
-
-  .tool-card:hover {
-    transform: translateY(-2px);
-  }
-}
-
-/* Reduce motion for accessibility */
-@media (prefers-reduced-motion: reduce) {
-
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
-}
-
-/* ============================================
-   Focus States for Accessibility
-   ============================================ */
-
-:focus-visible {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 2px;
-}
-
-/* Selection Styles */
-::selection {
-  background: rgba(59, 130, 246, 0.3);
-  color: var(--text-primary);
 }
